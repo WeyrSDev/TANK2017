@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "entity.h"
 #include "player.h"
+#include "player2.h"
 #include "projectile.h"
 #include "enemy.h"
 
@@ -57,6 +58,11 @@ int main() {
     // Player
     class Player player1;
     player1.sprite.setTexture(p1_texture);
+    player1.rect.setPosition(200, 200);
+
+    class Player2 player2;
+    player2.sprite.setTexture(p1_texture);
+    player2.rect.setPosition(400, 200);
 
     // Projectiles
     std::vector<Projectile>::const_iterator iter;
@@ -100,7 +106,7 @@ int main() {
             for (e_iter = enemy_array.begin(); e_iter != enemy_array.end(); e_iter++) {
                 if (projectile_array[counter].rect.getGlobalBounds().intersects(enemy_array[counter2].rect.getGlobalBounds())) {
                     projectile_array[counter].alive = false;
-                    enemy_array[counter2].hp--;
+                    enemy_array[counter2].hp -= projectile_array[counter].attack_damage;
                     if (enemy_array[counter2].hp <= 0) {
                         enemy_array[counter2].alive = false; // rip
                     }
@@ -133,16 +139,29 @@ int main() {
         // Player rect and sprite updates
         player1.Update();
         player1.UpdateMovement(elapsed_time);
-        // Draw player
+        player2.Update();
+        player2.UpdateMovement(elapsed_time);
         window.draw(player1.sprite);
+        window.draw(player2.sprite);
         //window.draw(title);
         
-        // Missile creation (; key)
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::SemiColon) && game_clock.getElapsedTime().asSeconds() - player1.last_shot.asSeconds() > 2.f) {
+        float shot_delay = 2.f;
+
+        // Missile creation (space key) player1
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && game_clock.getElapsedTime().asSeconds() - player1.last_shot.asSeconds() > shot_delay) {
             player1.last_shot = game_clock.getElapsedTime();
             sf::Vector2f vector16(16, 16); // Centering
             projectile1.rect.setPosition(player1.rect.getPosition() - vector16);
             projectile1.angle = player1.angle;
+            projectile_array.push_back(projectile1);
+        }
+
+        // Missile creation (Num0 key) player2
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) && game_clock.getElapsedTime().asSeconds() - player2.last_shot.asSeconds() > shot_delay) {
+            player2.last_shot = game_clock.getElapsedTime();
+            sf::Vector2f vector16(16, 16); // Centering
+            projectile1.rect.setPosition(player2.rect.getPosition() - vector16);
+            projectile1.angle = player2.angle;
             projectile_array.push_back(projectile1);
         }
         

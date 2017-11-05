@@ -3,9 +3,9 @@
 #include "stdafx.h"
 #include "entity.h"
 
-class Player : public Entity {
+class Player2 : public Entity {
 public:
-    Player();
+    Player2();
 
     void Update();
     void UpdateMovement(sf::Time elapsed_time);

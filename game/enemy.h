@@ -12,7 +12,7 @@ public:
     
     float enemy_speed = 0.5f;
     float attack_damage = 5;
-    float hp = 10;
+    float hp = 10.f;
     std::size_t movement_length = 100;
     bool alive = true;
     
