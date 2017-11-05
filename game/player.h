@@ -7,8 +7,7 @@ class Player : public Entity {
 public:
     Player();
 
-    void Update();
-    void UpdateMovement(sf::Time elapsed_time);
+    void Update(sf::Time elapsed_time);
     
     float player_speed = 70.f;
     float attack_damage = 10.f;

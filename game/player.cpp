@@ -10,16 +10,10 @@ Player::Player() {
     sprite.setOrigin(sprite.getLocalBounds().width/2, sprite.getLocalBounds().height/2);
 }
 
-void Player::Update() {
+void Player::Update(sf::Time elapsed_time) {
     sprite.setPosition(rect.getPosition());
     sprite.setRotation(rect.getRotation());
-}
-
-void Player::UpdateMovement(sf::Time elapsed_time) {
-    // if (angle > 360) {
-    //     angle = angle - 360;
-    // }
-
+    
     float move_amount = player_speed * elapsed_time.asSeconds();
     float move_x = LinearVelocityX(angle) * move_amount;
     float move_y = LinearVelocityY(angle) * move_amount;

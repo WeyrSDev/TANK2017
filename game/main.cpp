@@ -3,7 +3,7 @@
 #include "player.h"
 #include "player2.h"
 #include "projectile.h"
-#include "enemy.h"
+#include "obstacle.h"
 
 #include <iostream>
 
@@ -48,18 +48,17 @@ int main() {
         return -1;
     }
     
-    // Title screen
-    // sf::Text title("Archer", font);
-    // title.setCharacterSize(120);
-    // title.setStyle(sf::Text::Bold);
-    // title.setFillColor(sf::Color(10, 100, 200));
-    // title.setPosition(GAME_WIDTH/2 - 100, GAME_HEIGHT/2 - 100);
+    // Popup message
+    sf::Text message("", font);
+    message.setCharacterSize(120);
+    message.setStyle(sf::Text::Bold);
+    message.setFillColor(sf::Color(10, 100, 200));
+    message.setPosition(GAME_WIDTH/2, GAME_HEIGHT/2);
 
-    // Player
+    // Players
     class Player player1;
     player1.sprite.setTexture(p1_texture);
     player1.rect.setPosition(200, 200);
-
     class Player2 player2;
     player2.sprite.setTexture(p1_texture);
     player2.rect.setPosition(400, 200);
@@ -71,12 +70,13 @@ int main() {
     projectile1.sprite.setTexture(flame_texture);
 
     // Enemies
-    std::vector<Enemy>::const_iterator e_iter;
-    std::vector<Enemy> enemy_array;
-    class Enemy enemy1;
+    std::vector<Obstacle>::const_iterator e_iter;
+    std::vector<Obstacle> obstacle_array;
+    class Obstacle enemy1;
     enemy1.sprite.setTexture(fox_texture);
     enemy1.rect.setPosition(200, 300);
-    enemy_array.push_back(enemy1);
+    
+    obstacle_array.push_back(enemy1);
 
     sf::Clock frame_clock;
     sf::Clock game_clock;
@@ -103,24 +103,32 @@ int main() {
         std::size_t counter = 0;
         for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
             std::size_t counter2 = 0;
-            for (e_iter = enemy_array.begin(); e_iter != enemy_array.end(); e_iter++) {
-                if (projectile_array[counter].rect.getGlobalBounds().intersects(enemy_array[counter2].rect.getGlobalBounds())) {
+            for (e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
+                if (projectile_array[counter].rect.getGlobalBounds().intersects(obstacle_array[counter2].rect.getGlobalBounds())) {
                     projectile_array[counter].alive = false;
-                    enemy_array[counter2].hp -= projectile_array[counter].attack_damage;
-                    if (enemy_array[counter2].hp <= 0) {
-                        enemy_array[counter2].alive = false; // rip
+                    obstacle_array[counter2].hp -= projectile_array[counter].attack_damage;
+                    if (obstacle_array[counter2].hp <= 0) {
+                        obstacle_array[counter2].alive = false; // rip
                     }
+                // P1 collision
+                } else if (projectile_array[counter].rect.getGlobalBounds().intersects(player1.rect.getGlobalBounds()) && projectile_array[counter].Owner != Projectile::P1) {
+                    player1.alive = false; // rip
+                    message.setString("P2 won!");
+                // P2 collision
+                } else if (projectile_array[counter].rect.getGlobalBounds().intersects(player2.rect.getGlobalBounds()) && projectile_array[counter].Owner != Projectile::P2) {
+                    player2.alive = false; // rip
+                    message.setString("P1 won!");
                 }
                 ++counter2;
             }
             ++counter;
         }
 
-        // Enemies deletion
+        // Obstacle deletion
         counter = 0;
-        for(e_iter = enemy_array.begin(); e_iter != enemy_array.end(); e_iter++) {
-            if (!enemy_array[counter].alive) {
-                enemy_array.erase(e_iter);
+        for(e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
+            if (!obstacle_array[counter].alive) {
+                obstacle_array.erase(e_iter);
                 break;
             }
             ++counter;
@@ -137,54 +145,59 @@ int main() {
         }
 
         // Player rect and sprite updates
-        player1.Update();
-        player1.UpdateMovement(elapsed_time);
-        player2.Update();
-        player2.UpdateMovement(elapsed_time);
+        player1.Update(elapsed_time);
+        player2.Update(elapsed_time);
         window.draw(player1.sprite);
         window.draw(player2.sprite);
-        //window.draw(title);
+        window.draw(message);
         
         float shot_delay = 2.f;
-
         // Missile creation (space key) player1
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && game_clock.getElapsedTime().asSeconds() - player1.last_shot.asSeconds() > shot_delay) {
             player1.last_shot = game_clock.getElapsedTime();
-            sf::Vector2f vector16(16, 16); // Centering
-            projectile1.rect.setPosition(player1.rect.getPosition() - vector16);
             projectile1.angle = player1.angle;
+
+            projectile1.rect.setRotation(projectile1.angle);
+            float x = Entity::LinearVelocityX(projectile1.angle);
+            float y = Entity::LinearVelocityY(projectile1.angle);
+
+            projectile1.rect.setPosition(player1.rect.getPosition());
             projectile_array.push_back(projectile1);
         }
 
         // Missile creation (Num0 key) player2
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) && game_clock.getElapsedTime().asSeconds() - player2.last_shot.asSeconds() > shot_delay) {
             player2.last_shot = game_clock.getElapsedTime();
-            sf::Vector2f vector16(16, 16); // Centering
-            projectile1.rect.setPosition(player2.rect.getPosition() - vector16);
             projectile1.angle = player2.angle;
+            projectile1.Owner = Projectile::P2;
+
+            projectile1.rect.setRotation(projectile1.angle);
+            float x = Entity::LinearVelocityX(projectile1.angle);
+            float y = Entity::LinearVelocityY(projectile1.angle);
+
+            projectile1.rect.setPosition(player2.rect.getPosition().x + x, player2.rect.getPosition().y + y);
             projectile_array.push_back(projectile1);
         }
         
-        // Enemy creation (Backspace)
+        // Obstacle creation (Backspace)
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace)) {
             enemy1.rect.setPosition(GenerateRandom(window.getSize().x), GenerateRandom(window.getSize().y));
-            enemy_array.push_back(enemy1);
+            obstacle_array.push_back(enemy1);
         }
         
-        // Enemy drawing
+        // Obstacle drawing
         counter = 0;
-        for(e_iter = enemy_array.begin(); e_iter != enemy_array.end(); e_iter++) {
-            enemy_array[counter].Update();
-            enemy_array[counter].UpdateMovement();
-            window.draw(enemy_array[counter].sprite);
+        for(e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
+            obstacle_array[counter].Update(elapsed_time);
+            window.draw(obstacle_array[counter].sprite);
             ++counter;
         }
         
-        // Missile drawing (Vectors dont have a self destruct timer)
+        // Missile drawing
         counter = 0;
         for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
             projectile_array[counter].Update(elapsed_time);
-            window.draw(projectile_array[counter].sprite);
+            window.draw(projectile_array[counter].rect);
             ++counter;
         }
         

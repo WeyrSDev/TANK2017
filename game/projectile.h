@@ -13,6 +13,13 @@ public:
     bool alive = true;
     sf::Clock _projectile_clock;
 
+    enum Owner {
+        P1,
+        P2
+    }
+
+    Owner = P1;
+
 private:
     sf::Clock _anim_timer;
     std::size_t counter_walking = 0;
