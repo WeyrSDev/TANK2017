@@ -6,7 +6,7 @@ Projectile::Projectile() {
     rect.setPosition(0, 0);
 
     // Setting origin to the center of the sprite
-    sprite.setOrigin(sprite.getLocalBounds().width/2, sprite.getLocalBounds().height/2);
+    rect.setOrigin(rect.getGlobalBounds().width/2, rect.getGlobalBounds().height/2);
 }
 
 void Projectile::Update(sf::Time elapsed_time) {

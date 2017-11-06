@@ -7,7 +7,7 @@ Player::Player() {
     rect.setPosition(GAME_WIDTH/2, GAME_HEIGHT/2);
     
     // Setting origin  to be the center of the sprite
-    sprite.setOrigin(sprite.getLocalBounds().width/2, sprite.getLocalBounds().height/2);
+    rect.setOrigin(rect.getGlobalBounds().width/2, rect.getGlobalBounds().height/2);
 }
 
 void Player::Update(sf::Time elapsed_time) {
@@ -18,24 +18,22 @@ void Player::Update(sf::Time elapsed_time) {
     float move_x = LinearVelocityX(angle) * move_amount;
     float move_y = LinearVelocityY(angle) * move_amount;
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+    if (sf::Keyboard::isKeyPressed(forward)) {
         rect.move(move_x, move_y);
         // sprite.setTextureRect(sf::IntRect(counter_wealking*32, 32 * 2, 32, 32));
- 
     }
      
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+    if (sf::Keyboard::isKeyPressed(backwards)) {
         rect.move(-move_x, -move_y);
         // sprite.setTextureRect(sf::IntRect(counter_walking*32, 0, 32, 32));
- 
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+    if (sf::Keyboard::isKeyPressed(left)) {
         rect.rotate(-60 * elapsed_time.asSeconds());
         angle = rect.getRotation();
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+    if (sf::Keyboard::isKeyPressed(right)) {
         rect.rotate(60 * elapsed_time.asSeconds());
         angle = rect.getRotation();
     }
