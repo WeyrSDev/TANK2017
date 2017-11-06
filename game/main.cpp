@@ -106,26 +106,32 @@ int main() {
         // Projectile collision
         std::size_t counter = 0;
         for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
+            // Projectile-P1 collision
+            if (projectile_array[counter].rect.getGlobalBounds().intersects(player1.rect.getGlobalBounds()) && projectile_array[counter].Owner != Projectile::P1) {
+                player1.hp -= projectile1.attack_damage;
+                if (player1.hp <= 0) {
+                    player1.alive = false; // rip
+                    projectile_array[counter].alive = false;
+                    message.setString("P2 won!");
+                }
+                projectile_array.erase(iter);
+                break;
+            // Projectile-P2 collision
+            } else if (projectile_array[counter].rect.getGlobalBounds().intersects(player2.rect.getGlobalBounds()) && projectile_array[counter].Owner != Projectile::P2) {
+                player2.hp -= projectile1.attack_damage;
+                if (player2.hp <= 0) {
+                    player2.alive = false; // rip
+                    projectile_array[counter].alive = false;
+                    message.setString("P1 won!");
+                }
+                projectile_array.erase(iter);
+                break;
+            }
+            
+            // Projectile-obstacle collision
             std::size_t counter2 = 0;
             for (e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
-                // Projectile-P1 collision
-                if (projectile_array[counter].rect.getGlobalBounds().intersects(player1.rect.getGlobalBounds()) && projectile_array[counter].Owner != Projectile::P1) {
-                    player1.hp -= projectile1.attack_damage;
-                    if (player1.hp <= 0) {
-                        player1.alive = false; // rip
-                        projectile_array[counter].alive = false;
-                        message.setString("P2 won!");
-                    }
-                // Projectile-P2 collision
-                } else if (projectile_array[counter].rect.getGlobalBounds().intersects(player2.rect.getGlobalBounds()) && projectile_array[counter].Owner != Projectile::P2) {
-                    player2.hp -= projectile1.attack_damage;
-                    if (player2.hp <= 0) {
-                        player2.alive = false; // rip
-                        projectile_array[counter].alive = false;
-                        message.setString("P1 won!");
-                    }
-                // Projectile-obstacle collision
-                } else if (projectile_array[counter].rect.getGlobalBounds().intersects(obstacle_array[counter2].rect.getGlobalBounds())) {
+                if (projectile_array[counter].rect.getGlobalBounds().intersects(obstacle_array[counter2].rect.getGlobalBounds())) {
                     projectile_array[counter].alive = false;
                     obstacle_array[counter2].hp -= projectile_array[counter].attack_damage;
                     if (obstacle_array[counter2].hp <= 0) {
