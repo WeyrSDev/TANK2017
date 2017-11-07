@@ -72,14 +72,14 @@ int main() {
     class Projectile projectile1;
     projectile1.sprite.setTexture(flame_texture);
 
-    // Enemies
+    // Obstacle
     std::vector<Obstacle>::const_iterator e_iter;
     std::vector<Obstacle> obstacle_array;
-    class Obstacle enemy1;
-    enemy1.sprite.setTexture(fox_texture);
-    enemy1.rect.setPosition(200, 300);
+    class Obstacle obstacle;
+    obstacle.sprite.setTexture(fox_texture);
+    obstacle.rect.setPosition(200, 300);
     
-    obstacle_array.push_back(enemy1);
+    obstacle_array.push_back(obstacle);
 
     // Clocks
     sf::Clock frame_clock;
@@ -164,8 +164,8 @@ int main() {
         }
 
         // Player rect and sprite updates
-        player1.Update(elapsed_time);
-        player2.Update(elapsed_time);
+        player1.Update(elapsed_time, obstacle);
+        player2.Update(elapsed_time, obstacle);
         window.draw(player1.rect);
         window.draw(player2.rect);
         
@@ -202,8 +202,8 @@ int main() {
         
         // Obstacle creation (Backspace)
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace)) {
-            enemy1.rect.setPosition(GenerateRandom(window.getSize().x), GenerateRandom(window.getSize().y));
-            obstacle_array.push_back(enemy1);
+            obstacle.rect.setPosition(GenerateRandom(window.getSize().x), GenerateRandom(window.getSize().y));
+            obstacle_array.push_back(obstacle);
         }
         
         // Obstacle drawing

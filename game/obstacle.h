@@ -11,6 +11,9 @@ public:
     float hp = 20.f;
     bool alive = true;
     
+    std::vector<Obstacle>::const_iterator e_iter;
+    std::vector<Obstacle> obstacle_array;
+
 private:
 
 };

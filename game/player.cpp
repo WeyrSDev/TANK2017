@@ -10,7 +10,7 @@ Player::Player() {
     rect.setOrigin(rect.getGlobalBounds().width/2, rect.getGlobalBounds().height/2);
 }
 
-void Player::Update(sf::Time elapsed_time) {
+void Player::Update(sf::Time elapsed_time, Obstacle obstacle) {
     sprite.setPosition(rect.getPosition());
     sprite.setRotation(rect.getRotation());
     
@@ -22,19 +22,27 @@ void Player::Update(sf::Time elapsed_time) {
         rect.move(move_x, move_y);
         // sprite.setTextureRect(sf::IntRect(counter_wealking*32, 32 * 2, 32, 32));
     }
-     
+    
     if (sf::Keyboard::isKeyPressed(backwards)) {
         rect.move(-move_x, -move_y);
         // sprite.setTextureRect(sf::IntRect(counter_walking*32, 0, 32, 32));
     }
 
     if (sf::Keyboard::isKeyPressed(left)) {
-        rect.rotate(-60 * elapsed_time.asSeconds());
+        if (sf::Keyboard::isKeyPressed(backwards)) {
+            rect.rotate(60 * elapsed_time.asSeconds());
+        } else {
+            rect.rotate(-60 * elapsed_time.asSeconds());
+        }
         angle = rect.getRotation();
     }
 
     if (sf::Keyboard::isKeyPressed(right)) {
-        rect.rotate(60 * elapsed_time.asSeconds());
+        if (sf::Keyboard::isKeyPressed(backwards)) {
+            rect.rotate(-60 * elapsed_time.asSeconds());
+        } else {
+            rect.rotate(60 * elapsed_time.asSeconds());
+        }
         angle = rect.getRotation();
     }
 

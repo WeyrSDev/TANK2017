@@ -2,12 +2,12 @@
 
 #include "stdafx.h"
 #include "entity.h"
+#include "obstacle.h"
 
 class Player : public Entity {
 public:
     Player();
-
-    void Update(sf::Time elapsed_time);
+    void Update(sf::Time elapsed_time, Obstacle obstacle);
     
     float player_speed = 70.f;
     float attack_damage = 10.f;
@@ -23,4 +23,5 @@ private:
     int counter_walking = 0;
     int rotation_speed = 60;
     sf::Clock _anim_clock;
+    bool going_forward;
 };
