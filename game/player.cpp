@@ -3,14 +3,15 @@
 Player::Player() {
     rect.setSize(sf::Vector2f(32.f, 32.f));
     rect.setFillColor(sf::Color::Green);
-    sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
+    //sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
     rect.setPosition(GAME_WIDTH/2, GAME_HEIGHT/2);
     
     // Setting origin  to be the center of the sprite
-    rect.setOrigin(rect.getGlobalBounds().width/2, rect.getGlobalBounds().height/2);
+    // rect.setOrigin(rect.getGlobalBounds().width/2, rect.getGlobalBounds().height/2);
+    sprite.setOrigin(sprite.getGlobalBounds().width/2, sprite.getGlobalBounds().height/2);
 }
 
-void Player::Update(sf::Time elapsed_time, Obstacle obstacle) {
+void Player::Update(sf::Time elapsed_time, const Obstacle& obstacle) {
     sprite.setPosition(rect.getPosition());
     sprite.setRotation(rect.getRotation());
     

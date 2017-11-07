@@ -1,12 +1,13 @@
 #include "projectile.h"
 
 Projectile::Projectile() {
-    rect.setSize(sf::Vector2f(20.f, 20.f));
+    rect.setSize(sf::Vector2f(20.f, 10.f));
     rect.setFillColor(sf::Color::Cyan);
     rect.setPosition(0, 0);
 
     // Setting origin to the center of the sprite
     rect.setOrigin(rect.getGlobalBounds().width/2, rect.getGlobalBounds().height/2);
+    sprite.setOrigin(sprite.getGlobalBounds().width/2, sprite.getGlobalBounds().height/2);
 }
 
 void Projectile::Update(sf::Time elapsed_time) {

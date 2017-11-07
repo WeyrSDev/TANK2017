@@ -3,13 +3,14 @@
 #include "player.h"
 #include "projectile.h"
 #include "obstacle.h"
+#include "collision.h"
 
 #include <iostream>
 
 int main() {
     srand(std::time(0));
 
-    sf::RenderWindow window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "Window1"); // sf::Style::Fullscreen
+    sf::RenderWindow window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "Tank Game"); // sf::Style::Fullscreen
     window.setFramerateLimit(60);
 
     // Texture and sprites loading
@@ -55,12 +56,20 @@ int main() {
     message.setPosition(GAME_WIDTH/2, GAME_HEIGHT/2);
 
     // Players configuration
+    // TODO Move these configs to player constructor
     class Player player1;
     player1.sprite.setTexture(p1_texture);
     player1.rect.setPosition(200, 200);
+    player1.sprite.setOrigin(player1.sprite.getGlobalBounds().width/2, player1.sprite.getGlobalBounds().height/2);
+    player1.forward = sf::Keyboard::W;
+    player1.backwards = sf::Keyboard::S;
+    player1.left = sf::Keyboard::A;
+    player1.right = sf::Keyboard::D;
+
     class Player player2;
     player2.sprite.setTexture(p1_texture);
     player2.rect.setPosition(400, 200);
+    player2.sprite.setOrigin(player2.sprite.getGlobalBounds().width/2, player2.sprite.getGlobalBounds().height/2);
     player2.forward = sf::Keyboard::I;
     player2.backwards = sf::Keyboard::K;
     player2.left = sf::Keyboard::J;
@@ -69,8 +78,10 @@ int main() {
     // Projectiles
     std::vector<Projectile>::const_iterator iter;
     std::vector<Projectile> projectile_array;
-    class Projectile projectile1;
-    projectile1.sprite.setTexture(flame_texture);
+    // Move these configs to projectile constructor
+    class Projectile projectile;
+    projectile.sprite.setTexture(flame_texture);
+    projectile.sprite.setOrigin(projectile.sprite.getGlobalBounds().width/2, projectile.sprite.getGlobalBounds().height/2);
 
     // Obstacle
     std::vector<Obstacle>::const_iterator e_iter;
@@ -107,8 +118,8 @@ int main() {
         std::size_t counter = 0;
         for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
             // Projectile-P1 collision
-            if (projectile_array[counter].rect.getGlobalBounds().intersects(player1.rect.getGlobalBounds()) && projectile_array[counter].Owner != Projectile::P1) {
-                player1.hp -= projectile1.attack_damage;
+            if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player1.sprite) && projectile_array[counter].Owner != Projectile::P1) {
+                player1.hp -= projectile.attack_damage;
                 if (player1.hp <= 0) {
                     player1.alive = false; // rip
                     projectile_array[counter].alive = false;
@@ -117,8 +128,8 @@ int main() {
                 projectile_array.erase(iter);
                 break;
             // Projectile-P2 collision
-            } else if (projectile_array[counter].rect.getGlobalBounds().intersects(player2.rect.getGlobalBounds()) && projectile_array[counter].Owner != Projectile::P2) {
-                player2.hp -= projectile1.attack_damage;
+            } else if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player2.sprite) && projectile_array[counter].Owner != Projectile::P2) {
+                player2.hp -= projectile.attack_damage;
                 if (player2.hp <= 0) {
                     player2.alive = false; // rip
                     projectile_array[counter].alive = false;
@@ -131,7 +142,7 @@ int main() {
             // Projectile-obstacle collision
             std::size_t counter2 = 0;
             for (e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
-                if (projectile_array[counter].rect.getGlobalBounds().intersects(obstacle_array[counter2].rect.getGlobalBounds())) {
+                if (Collision::PixelPerfectTest(projectile_array[counter].sprite, obstacle_array[counter2].sprite)) {
                     projectile_array[counter].alive = false;
                     obstacle_array[counter2].hp -= projectile_array[counter].attack_damage;
                     if (obstacle_array[counter2].hp <= 0) {
@@ -166,38 +177,38 @@ int main() {
         // Player rect and sprite updates
         player1.Update(elapsed_time, obstacle);
         player2.Update(elapsed_time, obstacle);
-        window.draw(player1.rect);
-        window.draw(player2.rect);
+        window.draw(player1.sprite);
+        window.draw(player2.sprite);
         
         float shot_delay = 2.f;
         // Missile creation (space key) player1
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && game_clock.getElapsedTime().asSeconds() - player1.last_shot.asSeconds() > shot_delay) {
             player1.last_shot = game_clock.getElapsedTime();
-            projectile1.angle = player1.angle;
-            projectile1.attack_damage = player1.attack_damage;
-            projectile1.Owner = Projectile::P1;
+            projectile.angle = player1.angle;
+            projectile.attack_damage = player1.attack_damage;
+            projectile.Owner = Projectile::P1;
 
-            projectile1.rect.setRotation(projectile1.angle);
-            float x = Entity::LinearVelocityX(projectile1.angle);
-            float y = Entity::LinearVelocityY(projectile1.angle);
+            projectile.rect.setRotation(projectile.angle);
+            float x = Entity::LinearVelocityX(projectile.angle);
+            float y = Entity::LinearVelocityY(projectile.angle);
 
-            projectile1.rect.setPosition(player1.rect.getPosition().x, player1.rect.getPosition().y);
-            projectile_array.push_back(projectile1);
+            projectile.rect.setPosition(player1.rect.getPosition().x, player1.rect.getPosition().y);
+            projectile_array.push_back(projectile);
         }
 
         // Missile creation (Num0 key) player2
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) && game_clock.getElapsedTime().asSeconds() - player2.last_shot.asSeconds() > shot_delay) {
             player2.last_shot = game_clock.getElapsedTime();
-            projectile1.angle = player2.angle;
-            projectile1.attack_damage = player2.attack_damage;
-            projectile1.Owner = Projectile::P2;
+            projectile.angle = player2.angle;
+            projectile.attack_damage = player2.attack_damage;
+            projectile.Owner = Projectile::P2;
 
-            projectile1.rect.setRotation(projectile1.angle);
-            float x = Entity::LinearVelocityX(projectile1.angle);
-            float y = Entity::LinearVelocityY(projectile1.angle);
+            projectile.rect.setRotation(projectile.angle);
+            float x = Entity::LinearVelocityX(projectile.angle);
+            float y = Entity::LinearVelocityY(projectile.angle);
 
-            projectile1.rect.setPosition(player2.rect.getPosition().x, player2.rect.getPosition().y);
-            projectile_array.push_back(projectile1);
+            projectile.rect.setPosition(player2.rect.getPosition().x, player2.rect.getPosition().y);
+            projectile_array.push_back(projectile);
         }
         
         // Obstacle creation (Backspace)
@@ -218,7 +229,7 @@ int main() {
         counter = 0;
         for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
             projectile_array[counter].Update(elapsed_time);
-            window.draw(projectile_array[counter].rect);
+            window.draw(projectile_array[counter].sprite);
             ++counter;
         }
 
