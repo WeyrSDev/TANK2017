@@ -21,6 +21,6 @@ public:
     Owner = P1;
 
 private:
-    sf::Clock _anim_timer;
-    std::size_t counter_walking = 0;
+    // sf::Clock _anim_timer;
+    // std::size_t counter_walking = 0;
 };

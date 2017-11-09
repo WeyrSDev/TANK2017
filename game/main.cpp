@@ -203,7 +203,7 @@ int main() {
         counter = 0;
         for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
             projectile_array[counter].Update(elapsed_time);
-            window.draw(projectile_array[counter].rect); // DEBUG
+            // window.draw(projectile_array[counter].rect); // DEBUG
             window.draw(projectile_array[counter].sprite);
             ++counter;
         }

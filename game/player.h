@@ -23,5 +23,5 @@ public:
     
 private:
     std::size_t sprite_counter = 0;
-    sf::Clock _anim_clock;
+    sf::Clock _player_clock;
 };

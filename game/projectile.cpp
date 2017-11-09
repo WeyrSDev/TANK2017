@@ -4,8 +4,8 @@ Projectile::Projectile() {
     Load(PROJECTILE_PATH);
     assert(Loaded());
     
-    sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
-    rect.setSize(sf::Vector2f(sprite.getTextureRect().width, sprite.getTextureRect().height));
+    // sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
+    rect.setSize(sf::Vector2f(sprite.getLocalBounds().width, sprite.getLocalBounds().height));
     rect.setFillColor(sf::Color::Cyan);
 
     // Setting origin to the center of the sprite
@@ -23,14 +23,4 @@ void Projectile::Update(sf::Time elapsed_time) {
     float move_y = LinearVelocityY(angle) * move_amount;
     
     rect.move(move_x, move_y);
-
-    // Reset animation clock
-    if (_anim_timer.getElapsedTime().asSeconds() > 0.20) {
-        counter_walking++;
-        _anim_timer.restart();
-    }
-
-    if (counter_walking == 4) {
-        counter_walking = 0;
-    }
 }
