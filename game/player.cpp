@@ -24,14 +24,11 @@ void Player::Update(sf::Time elapsed_time, const Obstacle& obstacle) {
         float move_y = LinearVelocityY(angle) * move_amount;
 
         if (sf::Keyboard::isKeyPressed(forward)) {
-            rect.move(move_x, move_y);
-            
-            // sprite.setTextureRect(sf::IntRect(counter_wealking*32, 32 * 2, 32, 32));
+            rect.move(move_x, move_y);            
         }
         
         if (sf::Keyboard::isKeyPressed(backwards)) {
             rect.move(-move_x, -move_y);
-            // sprite.setTextureRect(sf::IntRect(counter_walking*32, 0, 32, 32));
         }
 
         if (sf::Keyboard::isKeyPressed(left)) {

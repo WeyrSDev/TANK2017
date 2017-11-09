@@ -49,7 +49,7 @@ int main() {
     player1.fire = sf::Keyboard::Space;
 
     class Player player2;
-    player2.rect.setPosition(400, 200);
+    player2.rect.setPosition(600, 600);
     player2.forward = sf::Keyboard::I;
     player2.backwards = sf::Keyboard::K;
     player2.left = sf::Keyboard::J;
