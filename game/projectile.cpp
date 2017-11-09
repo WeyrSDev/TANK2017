@@ -17,7 +17,6 @@ void Projectile::Update(sf::Time elapsed_time) {
     sprite.setPosition(rect.getPosition());
     sprite.setRotation(rect.getRotation());
     
-
     float move_amount = movement_speed * elapsed_time.asSeconds();
     float move_x = LinearVelocityX(angle) * move_amount;
     float move_y = LinearVelocityY(angle) * move_amount;

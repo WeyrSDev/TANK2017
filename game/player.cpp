@@ -25,6 +25,7 @@ void Player::Update(sf::Time elapsed_time, const Obstacle& obstacle) {
 
         if (sf::Keyboard::isKeyPressed(forward)) {
             rect.move(move_x, move_y);
+            
             // sprite.setTextureRect(sf::IntRect(counter_wealking*32, 32 * 2, 32, 32));
         }
         
@@ -51,8 +52,23 @@ void Player::Update(sf::Time elapsed_time, const Obstacle& obstacle) {
             angle = rect.getRotation();
         }
     }
-
     // std::cout << angle << "\n"; // DEBUG
+}
+
+void Player::Fire(Projectile& projectile, std::vector<Projectile>& projectile_array, enum Projectile::Owner owner) {
+    if (sf::Keyboard::isKeyPressed(fire) && _player_clock.getElapsedTime().asSeconds() - last_shot.asSeconds() > shot_delay && alive) {
+        last_shot = _player_clock.getElapsedTime();
+        projectile.angle = angle;
+        projectile.attack_damage = attack_damage;
+        projectile.Owner = owner;
+
+        projectile.rect.setRotation(projectile.angle);
+        float x = Entity::LinearVelocityX(projectile.angle);
+        float y = Entity::LinearVelocityY(projectile.angle);
+
+        projectile.rect.setPosition(sprite.getPosition());
+        projectile_array.push_back(projectile);
+    }
 }
 
 // Update the sprite when the tank gets hit to represent HP

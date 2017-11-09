@@ -10,7 +10,7 @@
 int main() {
     srand(std::time(0));
 
-    sf::RenderWindow window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "Tank Game"); // sf::Style::Fullscreen
+    sf::RenderWindow window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "TankGame", sf::Style::Fullscreen); // sf::Style::Fullscreen
     window.setFramerateLimit(60);
 
     // Texture loading
@@ -30,7 +30,7 @@ int main() {
         std::cout << "Error loading font!" << "\n";
         return -1;
     }
-    
+
     // Popup message
     sf::Text message("", font);
     message.setCharacterSize(100);
@@ -46,6 +46,7 @@ int main() {
     player1.backwards = sf::Keyboard::S;
     player1.left = sf::Keyboard::A;
     player1.right = sf::Keyboard::D;
+    player1.fire = sf::Keyboard::Space;
 
     class Player player2;
     player2.rect.setPosition(400, 200);
@@ -53,11 +54,12 @@ int main() {
     player2.backwards = sf::Keyboard::K;
     player2.left = sf::Keyboard::J;
     player2.right = sf::Keyboard::L;
+    player2.fire = sf::Keyboard::Return;
 
     // Projectiles
+    class Projectile projectile;
     std::vector<Projectile>::const_iterator iter;
     std::vector<Projectile> projectile_array;
-    class Projectile projectile;
 
     // Obstacle
     std::vector<Obstacle>::const_iterator e_iter;
@@ -82,9 +84,9 @@ int main() {
                 window.close();
             }
         }
-        
+
         sf::Time elapsed_time = frame_clock.restart(); // Frame time
-        
+
         window.clear();
         window.draw(background);
 
@@ -93,8 +95,8 @@ int main() {
         for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
             // Projectile-P1 collision
             if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player1.sprite) && projectile_array[counter].Owner != Projectile::P1) {
-                player1.hp -= projectile.attack_damage;
                 player1.Hit();
+                player1.hp -= projectile_array[counter].attack_damage;
                 if (player1.hp <= 0) {
                     projectile_array[counter].alive = false;
                     player1.alive = false; // rip
@@ -104,8 +106,8 @@ int main() {
                 break;
             // Projectile-P2 collision
             } else if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player2.sprite) && projectile_array[counter].Owner != Projectile::P2) {
-                player2.hp -= projectile.attack_damage;
                 player2.Hit();
+                player2.hp -= projectile_array[counter].attack_damage;
                 if (player2.hp <= 0) {
                     projectile_array[counter].alive = false;
                     player2.alive = false; // rip
@@ -114,7 +116,7 @@ int main() {
                 projectile_array.erase(iter);
                 break;
             }
-            
+
             // Projectile-obstacle collision
             std::size_t counter2 = 0;
             for (e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
@@ -139,72 +141,47 @@ int main() {
             }
             ++counter;
         }
-        
+
         // Projectile deletion
         counter = 0;
         for(iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
-            if (!projectile_array[counter].alive || projectile_array[counter].rect.getPosition().x > GAME_WIDTH || 
+            if (!projectile_array[counter].alive || projectile_array[counter].rect.getPosition().x > GAME_WIDTH ||
                 projectile_array[counter].rect.getPosition().y > GAME_HEIGHT) {
                 projectile_array.erase(iter);
                 break;
             }
             ++counter;
         }
-        
+
         // Player rect and sprite updates
         player1.Update(elapsed_time, obstacle);
         player2.Update(elapsed_time, obstacle);
-        window.draw(player1.rect); // DEBUG
+        // window.draw(player1.rect); // DEBUG
         window.draw(player1.sprite);
-        window.draw(player1.rect); // DEBUG
+        // window.draw(player2.rect); // DEBUG
         window.draw(player2.sprite);
-        
-        float shot_delay = 2.f;
-        // Missile creation (space key) player1
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && game_clock.getElapsedTime().asSeconds() - player1.last_shot.asSeconds() > shot_delay && player1.alive) {
-            player1.last_shot = game_clock.getElapsedTime();
-            projectile.angle = player1.angle;
-            projectile.attack_damage = player1.attack_damage;
-            projectile.Owner = Projectile::P1;
 
-            projectile.rect.setRotation(projectile.angle);
-            float x = Entity::LinearVelocityX(projectile.angle);
-            float y = Entity::LinearVelocityY(projectile.angle);
+        // Missile creation (SPACE key) player1
+        player1.Fire(projectile, projectile_array, Projectile::P1);
 
-            projectile.rect.setPosition(player1.sprite.getPosition());
-            projectile_array.push_back(projectile);
-        }
+        // Missile creation (ENTER key) player2
+        player2.Fire(projectile, projectile_array, Projectile::P2);
 
-        // Missile creation (Num0 key) player2
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) && game_clock.getElapsedTime().asSeconds() - player2.last_shot.asSeconds() > shot_delay && player2.alive) {
-            player2.last_shot = game_clock.getElapsedTime();
-            projectile.angle = player2.angle;
-            projectile.attack_damage = player2.attack_damage;
-            projectile.Owner = Projectile::P2;
-
-            projectile.rect.setRotation(projectile.angle);
-            float x = Entity::LinearVelocityX(projectile.angle);
-            float y = Entity::LinearVelocityY(projectile.angle);
-
-            projectile.rect.setPosition(player2.rect.getPosition().x, player2.rect.getPosition().y);
-            projectile_array.push_back(projectile);
-        }
-        
         // Obstacle creation (Backspace)
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace)) {
             obstacle.rect.setPosition(GenerateRandom(window.getSize().x), GenerateRandom(window.getSize().y));
             obstacle_array.push_back(obstacle);
         }
-        
+
         // Obstacle drawing
         counter = 0;
         for(e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
             obstacle_array[counter].Update(elapsed_time);
-            window.draw(obstacle_array[counter].rect); // DEBUG
+            // window.draw(obstacle_array[counter].rect); // DEBUG
             window.draw(obstacle_array[counter].sprite);
             ++counter;
         }
-        
+
         // Missile drawing
         counter = 0;
         for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {

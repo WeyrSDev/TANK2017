@@ -1,5 +1,9 @@
-static const int GAME_WIDTH = 900; // 1366
-static const int GAME_HEIGHT = 400; // 768
+// static const int GAME_WIDTH = 900;
+// static const int GAME_HEIGHT = 400;
+
+static const int GAME_WIDTH = 1366;
+static const int GAME_HEIGHT = 768;
+
 
 #define BACKGROUND_PATH "media/img/grass.png"
 #define TITLEFONT_PATH  "media/fonts/digitalfont.ttf"
