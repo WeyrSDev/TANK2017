@@ -10,7 +10,7 @@ public:
     void Update(sf::Time elapsed_time, const Obstacle& obstacle);
     void Hit();
     
-    float player_speed = 70.f;
+    float player_speed = 60.f;
     float attack_damage = 10.f;
     float hp = 30.0f;
     int turn_rate = 40;
@@ -22,7 +22,6 @@ public:
     sf::Keyboard::Key right;
     
 private:
-    int counter_walking = 0;
-    int rotation_speed = 60;
+    std::size_t sprite_counter = 0;
     sf::Clock _anim_clock;
 };

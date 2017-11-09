@@ -4,7 +4,7 @@ static const int GAME_HEIGHT = 400; // 768
 #define BACKGROUND_PATH "media/img/background.png"
 #define TITLEFONT_PATH  "media/fonts/digitalfont.ttf"
 
-#define CHARACTER_PATH  "media/img/tank.png"
-#define FOX_PATH        "media/img/fox.png"
+#define PLAYER_PATH     "media/img/tank.png"
+#define OBSTACLE_PATH   "media/img/fox.png"
 
-#define FLAME_PATH      "media/img/flame.png"
+#define PROJECTILE_PATH "media/img/flame.png"

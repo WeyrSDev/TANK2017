@@ -1,9 +1,12 @@
 #include "projectile.h"
 
 Projectile::Projectile() {
-    rect.setSize(sf::Vector2f(20.f, 10.f));
+    Load(PROJECTILE_PATH);
+    assert(Loaded());
+    
+    sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
+    rect.setSize(sf::Vector2f(sprite.getTextureRect().width, sprite.getTextureRect().height));
     rect.setFillColor(sf::Color::Cyan);
-    rect.setPosition(0, 0);
 
     // Setting origin to the center of the sprite
     rect.setOrigin(rect.getGlobalBounds().width/2, rect.getGlobalBounds().height/2);
@@ -14,7 +17,6 @@ void Projectile::Update(sf::Time elapsed_time) {
     sprite.setPosition(rect.getPosition());
     sprite.setRotation(rect.getRotation());
     
-    sprite.setTextureRect(sf::IntRect(counter_walking*32, 32, 32, 32));
 
     float move_amount = movement_speed * elapsed_time.asSeconds();
     float move_x = LinearVelocityX(angle) * move_amount;
