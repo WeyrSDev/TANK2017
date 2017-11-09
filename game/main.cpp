@@ -19,7 +19,10 @@ int main() {
         std::cout << "Error loading texture!" << "\n";
         return -1;
     }
+    background_texture.setRepeated(true);
+    background_texture.setSmooth(true);
     sf::Sprite background(background_texture);
+    background.setTextureRect(sf::IntRect(0, 0, GAME_WIDTH, GAME_HEIGHT));
 
     sf::Font font;
     if (!font.loadFromFile(TITLEFONT_PATH)) {

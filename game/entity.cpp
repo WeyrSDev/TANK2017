@@ -12,8 +12,7 @@ void Entity::Load(std::string filename) {
         sprite.setTexture(texture);
         _loaded = true;
     }
-
-    texture.setSmooth(true);
+    // texture.setSmooth(true);
 }
 
 void Entity::Update(sf::Time elapsed_time) {
