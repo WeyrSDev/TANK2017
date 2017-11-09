@@ -52,13 +52,7 @@ void Player::Update(sf::Time elapsed_time, const Obstacle& obstacle) {
         }
     }
 
-    std::cout << angle << "\n"; // DEBUG
-
-    // // Reset animation clock
-    // if (_anim_clock.getElapsedTime().asSeconds() > 0.25) {
-    //     counter_walking++;
-    //     _anim_clock.restart();
-    // }
+    // std::cout << angle << "\n"; // DEBUG
 }
 
 // Update the sprite when the tank gets hit to represent HP

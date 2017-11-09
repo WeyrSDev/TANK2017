@@ -13,7 +13,7 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "Tank Game"); // sf::Style::Fullscreen
     window.setFramerateLimit(60);
 
-    // Texture and sprites loading
+    // Texture loading
     sf::Texture background_texture;
     if (!background_texture.loadFromFile(BACKGROUND_PATH)) {
         std::cout << "Error loading texture!" << "\n";
@@ -24,6 +24,7 @@ int main() {
     sf::Sprite background(background_texture);
     background.setTextureRect(sf::IntRect(0, 0, GAME_WIDTH, GAME_HEIGHT));
 
+    // Font loading
     sf::Font font;
     if (!font.loadFromFile(TITLEFONT_PATH)) {
         std::cout << "Error loading font!" << "\n";
@@ -32,10 +33,11 @@ int main() {
     
     // Popup message
     sf::Text message("", font);
-    message.setCharacterSize(120);
+    message.setCharacterSize(100);
     message.setStyle(sf::Text::Bold);
     message.setFillColor(sf::Color(10, 100, 200));
-    message.setPosition(GAME_WIDTH/2, GAME_HEIGHT/2);
+    message.setPosition(GAME_WIDTH/4, 0);
+    // message.setString("DEBUG"); // DEBUG
 
     // Players configuration
     class Player player1;
@@ -62,7 +64,6 @@ int main() {
     std::vector<Obstacle> obstacle_array;
     class Obstacle obstacle;
     obstacle.rect.setPosition(200, 300);
-    
     obstacle_array.push_back(obstacle);
 
     // Clocks
@@ -142,18 +143,20 @@ int main() {
         // Projectile deletion
         counter = 0;
         for(iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
-            if (!projectile_array[counter].alive) {
+            if (!projectile_array[counter].alive || projectile_array[counter].rect.getPosition().x > GAME_WIDTH || 
+                projectile_array[counter].rect.getPosition().y > GAME_HEIGHT) {
                 projectile_array.erase(iter);
                 break;
             }
             ++counter;
         }
-
+        
         // Player rect and sprite updates
         player1.Update(elapsed_time, obstacle);
         player2.Update(elapsed_time, obstacle);
-        window.draw(player1.rect); // Debug
+        window.draw(player1.rect); // DEBUG
         window.draw(player1.sprite);
+        window.draw(player1.rect); // DEBUG
         window.draw(player2.sprite);
         
         float shot_delay = 2.f;
