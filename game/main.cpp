@@ -21,12 +21,12 @@ int main() {
     }
     sf::Sprite background(background_texture);
 
-    sf::Texture p1_texture;
-    if (!p1_texture.loadFromFile(CHARACTER_PATH)) {
-        std::cout << "Error loading player texture!" << "\n";
-        return -1;
-    }
-    sf::Sprite p1_sprite(p1_texture);
+    // sf::Texture p1_texture;
+    // if (!p1_texture.loadFromFile(CHARACTER_PATH)) {
+    //     std::cout << "Error loading player texture!" << "\n";
+    //     return -1;
+    // }
+    // sf::Sprite p1_sprite(p1_texture);
 
     sf::Texture fox_texture;
     if (!fox_texture.loadFromFile(FOX_PATH)) {
@@ -58,7 +58,7 @@ int main() {
     // Players configuration
     // TODO Move these configs to player constructor
     class Player player1;
-    player1.sprite.setTexture(p1_texture);
+    // player1.sprite.setTexture(p1_texture);
     player1.rect.setPosition(200, 200);
     player1.sprite.setOrigin(player1.sprite.getGlobalBounds().width/2, player1.sprite.getGlobalBounds().height/2);
     player1.forward = sf::Keyboard::W;
@@ -67,7 +67,7 @@ int main() {
     player1.right = sf::Keyboard::D;
 
     class Player player2;
-    player2.sprite.setTexture(p1_texture);
+    // player2.sprite.setTexture(p1_texture);
     player2.rect.setPosition(400, 200);
     player2.sprite.setOrigin(player2.sprite.getGlobalBounds().width/2, player2.sprite.getGlobalBounds().height/2);
     player2.forward = sf::Keyboard::I;
@@ -120,6 +120,7 @@ int main() {
             // Projectile-P1 collision
             if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player1.sprite) && projectile_array[counter].Owner != Projectile::P1) {
                 player1.hp -= projectile.attack_damage;
+                player1.Hit();
                 if (player1.hp <= 0) {
                     player1.alive = false; // rip
                     projectile_array[counter].alive = false;
@@ -130,6 +131,7 @@ int main() {
             // Projectile-P2 collision
             } else if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player2.sprite) && projectile_array[counter].Owner != Projectile::P2) {
                 player2.hp -= projectile.attack_damage;
+                player2.Hit();
                 if (player2.hp <= 0) {
                     player2.alive = false; // rip
                     projectile_array[counter].alive = false;
@@ -177,6 +179,7 @@ int main() {
         // Player rect and sprite updates
         player1.Update(elapsed_time, obstacle);
         player2.Update(elapsed_time, obstacle);
+        window.draw(player1.rect); // Debug
         window.draw(player1.sprite);
         window.draw(player2.sprite);
         
@@ -192,7 +195,7 @@ int main() {
             float x = Entity::LinearVelocityX(projectile.angle);
             float y = Entity::LinearVelocityY(projectile.angle);
 
-            projectile.rect.setPosition(player1.rect.getPosition().x, player1.rect.getPosition().y);
+            projectile.rect.setPosition(player1.sprite.getPosition() + player1.sprite.getOrigin());
             projectile_array.push_back(projectile);
         }
 

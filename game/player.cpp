@@ -1,13 +1,16 @@
 #include "player.h"
 
 Player::Player() {
-    rect.setSize(sf::Vector2f(32.f, 32.f));
+    Load(CHARACTER_PATH);
+    assert(Loaded());
+    
+    rect.setSize(sf::Vector2f(sprite.getLocalBounds().width, sprite.getLocalBounds().width));
     rect.setFillColor(sf::Color::Green);
     //sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
     rect.setPosition(GAME_WIDTH/2, GAME_HEIGHT/2);
     
     // Setting origin  to be the center of the sprite
-    // rect.setOrigin(rect.getGlobalBounds().width/2, rect.getGlobalBounds().height/2);
+    rect.setOrigin(rect.getGlobalBounds().width/2, rect.getGlobalBounds().height/2);
     sprite.setOrigin(sprite.getGlobalBounds().width/2, sprite.getGlobalBounds().height/2);
 }
 
@@ -31,18 +34,18 @@ void Player::Update(sf::Time elapsed_time, const Obstacle& obstacle) {
 
     if (sf::Keyboard::isKeyPressed(left)) {
         if (sf::Keyboard::isKeyPressed(backwards)) {
-            rect.rotate(60 * elapsed_time.asSeconds());
+            rect.rotate(turn_rate * elapsed_time.asSeconds());
         } else {
-            rect.rotate(-60 * elapsed_time.asSeconds());
+            rect.rotate(-turn_rate * elapsed_time.asSeconds());
         }
         angle = rect.getRotation();
     }
 
     if (sf::Keyboard::isKeyPressed(right)) {
         if (sf::Keyboard::isKeyPressed(backwards)) {
-            rect.rotate(-60 * elapsed_time.asSeconds());
+            rect.rotate(-turn_rate * elapsed_time.asSeconds());
         } else {
-            rect.rotate(60 * elapsed_time.asSeconds());
+            rect.rotate(turn_rate * elapsed_time.asSeconds());
         }
         angle = rect.getRotation();
     }
@@ -58,4 +61,8 @@ void Player::Update(sf::Time elapsed_time, const Obstacle& obstacle) {
     if (counter_walking == 4) {
         counter_walking = 0;
     }
+}
+
+// Update the sprite when the tank gets hit to represent HP
+void Player::Hit() {
 }

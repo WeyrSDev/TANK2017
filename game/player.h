@@ -8,10 +8,12 @@ class Player : public Entity {
 public:
     Player();
     void Update(sf::Time elapsed_time, const Obstacle& obstacle);
+    void Hit();
     
     float player_speed = 70.f;
     float attack_damage = 10.f;
     float hp = 30.0f;
+    int turn_rate = 40;
     sf::Time last_shot = sf::seconds(0.f);
 
     sf::Keyboard::Key forward;
