@@ -25,12 +25,8 @@ void Player::Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array
         float move_y = LinearVelocityY(angle) * move_amount;
 
         // Walls collision
-        if (rect.getPosition().x + move_x + 1 <= rect.getGlobalBounds().width/2 || rect.getPosition().x + move_x + rect.getGlobalBounds().width/2 + 1 >= GAME_WIDTH) {
-            move_x = 0;
-        }
-        if (rect.getPosition().y + move_y + 1 <= rect.getGlobalBounds().height/2 || rect.getPosition().y + move_y + rect.getGlobalBounds().height/2 + 1 >= GAME_HEIGHT) {
-            move_y = 0;
-        }
+        move_x = CheckOutOfMapX(move_x);
+        move_y = CheckOutOfMapY(move_y);
 
         // Movement updates
         if (sf::Keyboard::isKeyPressed(forward)) {
@@ -61,6 +57,23 @@ void Player::Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array
     }
     // std::cout << angle << "\n"; // DEBUG
 }
+
+// Checks if the tank's sprite is getting out of the screen X axis
+float Player::CheckOutOfMapX(float move_x) {
+    if (rect.getPosition().x + move_x + 1 <= rect.getGlobalBounds().width/2 || rect.getPosition().x + move_x + rect.getGlobalBounds().width/2 + 1 >= GAME_WIDTH) {
+        return move_x = 0;
+    }
+    return move_x;
+}
+
+// Checks if the tank's sprite is getting out of the screen Y axis
+float Player::CheckOutOfMapY(float move_y) {
+    if (rect.getPosition().y + move_y + 1 <= rect.getGlobalBounds().height/2 || rect.getPosition().y + move_y + rect.getGlobalBounds().height/2 + 1 >= GAME_HEIGHT) {
+        return move_y = 0;
+    }
+    return move_y;
+}
+
 
 void Player::Fire(Projectile& projectile, std::vector<Projectile>& projectile_array, enum Projectile::Owner owner) {
     if (sf::Keyboard::isKeyPressed(fire) && _player_clock.getElapsedTime().asSeconds() - last_shot.asSeconds() > shot_delay && alive) {
