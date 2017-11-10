@@ -8,7 +8,7 @@
 class Player : public Entity {
 public:
     Player();
-    void Update(sf::Time elapsed_time, const Obstacle& obstacle);
+    void Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array, std::vector<Obstacle>::const_iterator& iter);
     void Hit();
     void Fire(Projectile& projectile, std::vector<Projectile>& projectile_array, enum Projectile::Owner owner);
     

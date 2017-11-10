@@ -9,8 +9,8 @@
 
 int main() {
     srand(std::time(0));
-
-    sf::RenderWindow window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "TankGame", sf::Style::Fullscreen); // sf::Style::Fullscreen
+    sf::Keyboard::setVirtualKeyboardVisible(true);
+    sf::RenderWindow window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "TankGame"); // sf::Style::Fullscreen
     window.setFramerateLimit(60);
 
     // Texture loading
@@ -154,8 +154,8 @@ int main() {
         }
 
         // Player rect and sprite updates
-        player1.Update(elapsed_time, obstacle);
-        player2.Update(elapsed_time, obstacle);
+        player1.Update(elapsed_time, obstacle_array, e_iter);
+        player2.Update(elapsed_time, obstacle_array, e_iter);
         // window.draw(player1.rect); // DEBUG
         window.draw(player1.sprite);
         // window.draw(player2.rect); // DEBUG

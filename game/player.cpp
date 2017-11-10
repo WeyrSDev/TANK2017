@@ -1,32 +1,42 @@
 #include "player.h"
+#include "collision.h"
 
 Player::Player() {
     Load(PLAYER_PATH);
     assert(Loaded());
-    
+
     sprite.setTextureRect(sf::IntRect(0, 0, 60, 40));
     rect.setSize(sf::Vector2f(sprite.getLocalBounds().width, sprite.getLocalBounds().height));
     rect.setFillColor(sf::Color::Green);
     rect.setPosition(GAME_WIDTH/2, GAME_HEIGHT/2);
-    
+
     // Setting origin to the center of the sprite
     rect.setOrigin(rect.getGlobalBounds().width/2, rect.getGlobalBounds().height/2);
     sprite.setOrigin(sprite.getGlobalBounds().width/2, sprite.getGlobalBounds().height/2);
 }
 
-void Player::Update(sf::Time elapsed_time, const Obstacle& obstacle) {
+void Player::Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array, std::vector<Obstacle>::const_iterator& iter) {
     sprite.setPosition(rect.getPosition());
     sprite.setRotation(rect.getRotation());
-    
+
     if (alive) {
         float move_amount = player_speed * elapsed_time.asSeconds();
         float move_x = LinearVelocityX(angle) * move_amount;
         float move_y = LinearVelocityY(angle) * move_amount;
 
-        if (sf::Keyboard::isKeyPressed(forward)) {
-            rect.move(move_x, move_y);            
+        // Walls collision
+        if (rect.getPosition().x + move_x + 1 <= rect.getGlobalBounds().width/2 || rect.getPosition().x + move_x + rect.getGlobalBounds().width/2 + 1 >= GAME_WIDTH) {
+            move_x = 0;
         }
-        
+        if (rect.getPosition().y + move_y + 1 <= rect.getGlobalBounds().height/2 || rect.getPosition().y + move_y + rect.getGlobalBounds().height/2 + 1 >= GAME_HEIGHT) {
+            move_y = 0;
+        }
+
+        // Movement updates
+        if (sf::Keyboard::isKeyPressed(forward)) {
+            rect.move(move_x, move_y);
+        }
+
         if (sf::Keyboard::isKeyPressed(backwards)) {
             rect.move(-move_x, -move_y);
         }
