@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "rand.h"
 
 int GenerateRandom(int max) {
     return (rand() % max) + 1;

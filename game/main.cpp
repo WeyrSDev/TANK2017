@@ -4,6 +4,7 @@
 #include "projectile.h"
 #include "obstacle.h"
 #include "collision.h"
+#include "rand.h"
 
 #include <iostream>
 
@@ -41,7 +42,7 @@ int main() {
 
     // Players configuration
     class Player player1;
-    player1.rect.setPosition(200, 200);
+    player1.rect.setPosition(GAME_WIDTH/4, GAME_HEIGHT/4);
     player1.forward = sf::Keyboard::W;
     player1.backwards = sf::Keyboard::S;
     player1.left = sf::Keyboard::A;
@@ -49,12 +50,17 @@ int main() {
     player1.fire = sf::Keyboard::Space;
 
     class Player player2;
-    player2.rect.setPosition(600, 300);
+    player2.rect.setPosition(GAME_WIDTH*4/5, GAME_HEIGHT*4/5);
     player2.forward = sf::Keyboard::I;
     player2.backwards = sf::Keyboard::K;
     player2.left = sf::Keyboard::J;
     player2.right = sf::Keyboard::L;
     player2.fire = sf::Keyboard::Return;
+    
+    std::vector<Player>::const_iterator p_iter;
+    std::vector<Player> player_array;
+    player_array.push_back(player1);
+    player_array.push_back(player2);
 
     // Projectiles
     class Projectile projectile;
@@ -64,9 +70,14 @@ int main() {
     // Obstacle
     std::vector<Obstacle>::const_iterator e_iter;
     std::vector<Obstacle> obstacle_array;
+    
+    // Placeholder obstacle generation
     class Obstacle obstacle;
-    obstacle.rect.setPosition(200, 300);
-    obstacle_array.push_back(obstacle);
+    // Obstacle generation
+    for (auto i = 0u; i < 35; ++i) {
+        obstacle.rect.setPosition(GenerateRandom(GAME_WIDTH), GenerateRandom(GAME_HEIGHT));
+        obstacle_array.push_back(obstacle);
+    }
 
     // Clocks
     sf::Clock frame_clock;
@@ -154,8 +165,8 @@ int main() {
         }
 
         // Player rect and sprite updates
-        player1.Update(elapsed_time, obstacle_array, e_iter);
-        player2.Update(elapsed_time, obstacle_array, e_iter);
+        player1.Update(elapsed_time, obstacle_array);
+        player2.Update(elapsed_time, obstacle_array);
         // window.draw(player1.rect); // DEBUG
         window.draw(player1.sprite);
         // window.draw(player2.rect); // DEBUG
@@ -166,12 +177,6 @@ int main() {
 
         // Missile creation (ENTER key) player2
         player2.Fire(projectile, projectile_array, Projectile::P2);
-
-        // Obstacle creation (Backspace)
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace)) {
-            obstacle.rect.setPosition(GenerateRandom(window.getSize().x), GenerateRandom(window.getSize().y));
-            obstacle_array.push_back(obstacle);
-        }
 
         // Obstacle drawing
         counter = 0;

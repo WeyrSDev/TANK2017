@@ -15,7 +15,7 @@ Player::Player() {
     sprite.setOrigin(sprite.getGlobalBounds().width/2, sprite.getGlobalBounds().height/2);
 }
 
-void Player::Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array, std::vector<Obstacle>::const_iterator& iter) {
+void Player::Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array) {
     sprite.setPosition(rect.getPosition());
     sprite.setRotation(rect.getRotation());
 
@@ -28,11 +28,20 @@ void Player::Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array
         move_x = CheckOutOfMapX(move_x);
         move_y = CheckOutOfMapY(move_y);
 
+        std::vector<Obstacle>::const_iterator e_iter;
+        std::size_t counter = 0;
+        for (e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
+            if (Collision::PixelPerfectTest(obstacle_array[counter].sprite, sprite)) {
+                move_x = 0;
+                move_y = 0;
+            }
+            ++counter;
+        }
+
         // Movement updates
         if (sf::Keyboard::isKeyPressed(forward)) {
             rect.move(move_x, move_y);
         }
-
         if (sf::Keyboard::isKeyPressed(backwards)) {
             rect.move(-move_x, -move_y);
         }
@@ -60,7 +69,7 @@ void Player::Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array
 
 // Checks if the tank's sprite is getting out of the screen X axis
 float Player::CheckOutOfMapX(float move_x) {
-    if (rect.getPosition().x + move_x + 1 <= rect.getGlobalBounds().width/2 || rect.getPosition().x + move_x + rect.getGlobalBounds().width/2 + 1 >= GAME_WIDTH) {
+    if (rect.getPosition().x + move_x <= rect.getGlobalBounds().width/2 || rect.getPosition().x + move_x + rect.getGlobalBounds().width/2 >= GAME_WIDTH) {
         return move_x = 0;
     }
     return move_x;
@@ -68,12 +77,11 @@ float Player::CheckOutOfMapX(float move_x) {
 
 // Checks if the tank's sprite is getting out of the screen Y axis
 float Player::CheckOutOfMapY(float move_y) {
-    if (rect.getPosition().y + move_y + 1 <= rect.getGlobalBounds().height/2 || rect.getPosition().y + move_y + rect.getGlobalBounds().height/2 + 1 >= GAME_HEIGHT) {
+    if (rect.getPosition().y + move_y <= rect.getGlobalBounds().height/2 || rect.getPosition().y + move_y + rect.getGlobalBounds().height/2 >= GAME_HEIGHT) {
         return move_y = 0;
     }
     return move_y;
 }
-
 
 void Player::Fire(Projectile& projectile, std::vector<Projectile>& projectile_array, enum Projectile::Owner owner) {
     if (sf::Keyboard::isKeyPressed(fire) && _player_clock.getElapsedTime().asSeconds() - last_shot.asSeconds() > shot_delay && alive) {

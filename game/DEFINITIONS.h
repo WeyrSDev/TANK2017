@@ -9,6 +9,7 @@ static const int GAME_HEIGHT = 400;
 #define TITLEFONT_PATH  "media/fonts/digitalfont.ttf"
 
 #define PLAYER_PATH     "media/img/tank.png"
-#define OBSTACLE_PATH   "media/img/fox.png"
+
+#define OBSTACLE_SPRITE "media/img/obstacle.png"
 
 #define PROJECTILE_PATH "media/img/projectile.png"
