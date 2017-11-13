@@ -11,6 +11,7 @@ public:
     float movement_speed = 1500.0f;
     float attack_damage = 10.0f;
     bool alive = true;
+    bool deflected = false;
     sf::Clock projectile_clock;
 
     enum Owner {

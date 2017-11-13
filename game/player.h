@@ -9,11 +9,12 @@ class Player : public Entity {
 public:
     Player();
     void Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array);
-    void Hit();
+    void Hit(std::size_t counter, std::vector<Projectile>& projectile_array);
     void Fire(Projectile& projectile, std::vector<Projectile>& projectile_array, enum Projectile::Owner owner);
     float CheckOutOfMapX(float move_x);
     float CheckOutOfMapY(float move_y);
-    
+    bool CalculateDeflect(std::size_t counter, std::vector<Projectile>& projectile_array);
+
     float player_speed = 60.f;
     float attack_damage = 10.f;
     float hp = 30.0f;

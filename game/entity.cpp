@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "entity.h"
 
-Entity::Entity(): _loaded{false} {}
+Entity::Entity(): 
+    _loaded{false} {}
 
 void Entity::Load(std::string filename) {
     if (!texture.loadFromFile(filename)) {

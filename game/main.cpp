@@ -11,7 +11,7 @@
 int main() {
     srand(std::time(0));
     sf::Keyboard::setVirtualKeyboardVisible(true);
-    sf::RenderWindow window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "TankGame"); // sf::Style::Fullscreen
+    sf::RenderWindow window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "TANK2017"); // sf::Style::Fullscreen
     window.setFramerateLimit(60);
 
     // Texture loading
@@ -50,7 +50,7 @@ int main() {
     player1.fire = sf::Keyboard::Space;
 
     class Player player2;
-    player2.rect.setPosition(GAME_WIDTH*4/5, GAME_HEIGHT*4/5);
+    player2.rect.setPosition(GAME_WIDTH/4 + 30, GAME_HEIGHT/4); // player2.rect.setPosition(GAME_WIDTH*4/5, GAME_HEIGHT*4/5);
     player2.forward = sf::Keyboard::I;
     player2.backwards = sf::Keyboard::K;
     player2.left = sf::Keyboard::J;
@@ -105,9 +105,9 @@ int main() {
         std::size_t counter = 0;
         for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
             // Projectile-P1 collision
-            if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player1.sprite) && projectile_array[counter].Owner != Projectile::P1) {
-                player1.Hit();
-                player1.hp -= projectile_array[counter].attack_damage;
+            if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player1.sprite) && projectile_array[counter].Owner != Projectile::P1 &&
+                !player1.CalculateDeflect(counter, projectile_array) && !projectile_array[counter].deflected) {
+                // player1.Hit(counter, projectile_array);
                 if (player1.hp <= 0) {
                     projectile_array[counter].alive = false;
                     player1.alive = false; // rip
@@ -116,9 +116,9 @@ int main() {
                 projectile_array.erase(iter);
                 break;
             // Projectile-P2 collision
-            } else if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player2.sprite) && projectile_array[counter].Owner != Projectile::P2) {
-                player2.Hit();
-                player2.hp -= projectile_array[counter].attack_damage;
+            } else if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player2.sprite) && projectile_array[counter].Owner != Projectile::P2 &&
+                !player2.CalculateDeflect(counter, projectile_array) && !projectile_array[counter].deflected) {
+                // player2.Hit(counter, projectile_array);
                 if (player2.hp <= 0) {
                     projectile_array[counter].alive = false;
                     player2.alive = false; // rip

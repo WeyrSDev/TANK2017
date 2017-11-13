@@ -14,6 +14,7 @@ Projectile::Projectile() {
 }
 
 void Projectile::Update(sf::Time elapsed_time) {
+    rect.setRotation(angle);
     sprite.setPosition(rect.getPosition());
     sprite.setRotation(rect.getRotation());
     
