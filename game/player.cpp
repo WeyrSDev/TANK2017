@@ -109,18 +109,19 @@ void Player::Hit(std::size_t counter, std::vector<Projectile>& projectile_array)
     sprite.setTextureRect(sf::IntRect(0, sprite_counter, 60, 40));
 }
 
-// Calculates and updates the exiting angle for a deflect
-bool Player::CalculateDeflect(std::size_t counter, std::vector<Projectile>& projectile_array) {
-    std::cout << "predeflect: " << std::abs(projectile_array[counter].angle - angle) % 90 << "\n";
-    if (!projectile_array[counter].deflected && std::abs(projectile_array[counter].angle - angle) % 90 <= 65 && std::abs(projectile_array[counter].angle - angle) % 90 >= 20) {
-        std::cout << "entry: " << std::abs(projectile_array[counter].angle - angle) % 90 << "\n";
-        projectile_array[counter].angle = angle + std::abs(projectile_array[counter].angle - angle);
-        if (projectile_array[counter].angle > 360) {
-            projectile_array[counter].angle -= 360;
-        }
-        projectile_array[counter].deflected = true;
-        std::cout << "exit: " << projectile_array[counter].angle << "\n \n";
-        return true;
-    }
-    return false;
-}
+// // Calculates and updates the exiting angle for a deflect
+// bool Player::CalculateDeflect(std::size_t counter, std::vector<Projectile>& projectile_array) {
+//     std::cout << "predeflect: " << std::abs(projectile_array[counter].angle - angle) % 90 << "\n";
+//     if (!projectile_array[counter].deflected && std::abs(projectile_array[counter].angle - angle) % 90 <= 65 && std::abs(projectile_array[counter].angle - angle) % 90 >= 35) {
+//         projectile_array[counter].angle -= std::abs(projectile_array[counter].angle - angle);
+//         projectile_array[counter].deflected = true;
+//         std::cout << "exit: " << projectile_array[counter].angle << "\n \n";
+//         return true;
+//     } else if (!projectile_array[counter].deflected && std::abs(projectile_array[counter].angle - angle) % 90 <= 35) {
+//         projectile_array[counter].angle += std::abs(projectile_array[counter].angle - angle);
+//         projectile_array[counter].deflected = true;
+//         std::cout << "exit: " << projectile_array[counter].angle << "\n \n";
+//         return true;
+//     }
+//     return false;
+// }
