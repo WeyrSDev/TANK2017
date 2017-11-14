@@ -10,6 +10,6 @@ static const int GAME_HEIGHT = 400;
 
 #define PLAYER_PATH     "media/img/tank.png"
 
-#define OBSTACLE_SPRITE "media/img/obstacle.png"
+#define WALL_SPRITE     "media/img/wall.png"
 
 #define PROJECTILE_PATH "media/img/projectile.png"

@@ -66,11 +66,12 @@ void Game::Start() {
     
     // Placeholder obstacle generation
     class Obstacle obstacle;
+    obstacle_array.push_back(obstacle);
     // Obstacle generation
-    for (auto i = 0u; i < 35; ++i) {
-        obstacle.rect.setPosition(GenerateRandom(GAME_WIDTH), GenerateRandom(GAME_HEIGHT));
-        obstacle_array.push_back(obstacle);
-    }
+    // for (auto i = 0u; i < 35; ++i) {
+    //     obstacle.rect.setPosition(GenerateRandom(GAME_WIDTH), GenerateRandom(GAME_HEIGHT));
+    //     obstacle_array.push_back(obstacle);
+    // }
 
     // Clocks
     sf::Clock frame_clock;
@@ -158,9 +159,7 @@ void Game::Start() {
         // Player rect and sprite updates
         player1.Update(elapsed_time, obstacle_array);
         player2.Update(elapsed_time, obstacle_array);
-        // window.draw(player1.rect); // DEBUG
         window.draw(player1.sprite);
-        // window.draw(player2.rect); // DEBUG
         window.draw(player2.sprite);
 
         // Missile creation (SPACE key) player1

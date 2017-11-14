@@ -7,6 +7,6 @@ class Obstacle : public Entity {
 public:
     Obstacle();
 
-    float hp = 20.f;
+    float hp = 10.f;
     bool alive = true;
 };
