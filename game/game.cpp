@@ -32,7 +32,7 @@ void Game::Start() {
 
     // Players configuration
     class Player player1;
-    player1.rect.setPosition(GAME_WIDTH/4, GAME_HEIGHT/4);
+    player1.rect.setPosition(32 * 2, 32 * 2);
     player1.sprite.setColor(sf::Color(0, 102, 51));
     player1.forward = sf::Keyboard::W;
     player1.backwards = sf::Keyboard::S;
@@ -41,8 +41,9 @@ void Game::Start() {
     player1.fire = sf::Keyboard::Space;
 
     class Player player2;
-    player2.rect.setPosition(GAME_WIDTH/4 + 30, GAME_HEIGHT/4);
-    // player2.rect.setPosition(GAME_WIDTH*4/5, GAME_HEIGHT*4/5); // Gameplay position
+    player2.rect.setPosition(GAME_WIDTH - 32 * 2, GAME_HEIGHT - 32 * 2);
+    player2.rect.setRotation(180);
+    player2.angle = 180;
     player2.sprite.setColor(sf::Color(0, 102, 110));
     player2.forward = sf::Keyboard::I;
     player2.backwards = sf::Keyboard::K;
