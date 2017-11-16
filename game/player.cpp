@@ -31,7 +31,7 @@ void Player::Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array
         std::vector<Obstacle>::const_iterator e_iter;
         std::size_t counter = 0;
         for (e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
-            if (Collision::PixelPerfectTest(obstacle_array[counter].sprite, sprite)) {
+            if (Collision::PixelPerfectTest(obstacle_array[counter].sprite, sprite) && !obstacle_array[counter].decoration) {
                 move_x = 0;
                 move_y = 0;
             }

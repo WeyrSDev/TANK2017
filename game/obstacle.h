@@ -10,4 +10,5 @@ public:
     float hp = 10.f;
     bool alive = true;
     bool destroyable = true;
+    bool decoration = false;
 };

@@ -1,8 +1,6 @@
 #include "game.h"
 #include "stdafx.h"
 
-
-
 void Game::Start() {
     srand(std::time(0));
     sf::Keyboard::setVirtualKeyboardVisible(true);
@@ -67,8 +65,7 @@ void Game::Start() {
     std::vector<Obstacle> obstacle_array;
     class Obstacle obstacle;
 
-    // Map generation
-    // Map outside
+    // Map selection
     Map map(1, obstacle, obstacle_array);
 
     // Clocks
@@ -121,7 +118,7 @@ void Game::Start() {
             // Projectile-obstacle collision
             std::size_t counter2 = 0;
             for (e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
-                if (Collision::PixelPerfectTest(projectile_array[counter].sprite, obstacle_array[counter2].sprite)) {
+                if (Collision::PixelPerfectTest(projectile_array[counter].sprite, obstacle_array[counter2].sprite) && !obstacle_array[counter2].decoration) {
                     if (obstacle_array[counter2].destroyable) {
                         obstacle_array[counter2].hp -= projectile_array[counter].attack_damage;
                         if (obstacle_array[counter2].hp <= 0) {
@@ -156,15 +153,12 @@ void Game::Start() {
             ++counter;
         }
 
-        // Player rect and sprite updates
+        // Player updates
         player1.Update(elapsed_time, obstacle_array);
         player2.Update(elapsed_time, obstacle_array);
-        window.draw(player1.sprite);
-        window.draw(player2.sprite);
-
+        
         // Missile creation (SPACE key) player1
         player1.Fire(projectile, projectile_array, Projectile::P1);
-
         // Missile creation (ENTER key) player2
         player2.Fire(projectile, projectile_array, Projectile::P2);
 
@@ -176,6 +170,10 @@ void Game::Start() {
             window.draw(projectile_array[counter].sprite);
             ++counter;
         }
+
+        // Player drawing
+        window.draw(player1.sprite);
+        window.draw(player2.sprite);
 
         // Obstacle drawing
         counter = 0;

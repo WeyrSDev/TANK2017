@@ -8,11 +8,14 @@ Map::Map(std::size_t level_number, Obstacle& obstacle, std::vector<Obstacle>& ob
         case 2:
             break;
     }
+
+    if (!leaf_texture.loadFromFile(LEAF_SPRITE)) {
+        std::cout << "Error loading leaf texture!" << "\n";
+    }
 }
 
 void Map::GenerateBorders(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
     obstacle.destroyable = false;
-    obstacle.sprite.setColor(sf::Color(100, 100, 100));
     // Generate vertical border walls
     for (auto i = 0u; i < GAME_HEIGHT; i+=32) {
         obstacle.rect.setPosition(0, i);
@@ -36,8 +39,17 @@ void Map::GenerateBorders(Obstacle& obstacle, std::vector<Obstacle>& obstacle_ar
 
 void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
     GenerateBorders(obstacle, obstacle_array);
+    obstacle.decoration = true;
+    obstacle.sprite.setTexture(leaf_texture);
+    
+    for (auto i = 128u; i < 32 * 10; i+=32) {
+        obstacle.rect.setPosition(i, 128);
+        obstacle_array.push_back(obstacle);
+    }
 }
 
 void Map::LoadLevel2(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
     GenerateBorders(obstacle, obstacle_array);
+    obstacle.rect.setPosition(100, 100);
+    obstacle_array.push_back(obstacle);
 }
