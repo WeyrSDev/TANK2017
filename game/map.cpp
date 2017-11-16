@@ -1,33 +1,28 @@
-#include <fstream>
-
 #include "map.h"
 
-void Map::Load(const std::string& filename, unsigned int width, unsigned int height,
-    std::map<std::string, Entity>& tile_atlas) {
-    
-    std::ifstream input_file;
-    input_file.open(filename, std::ios::in | std::ios::binary);
-
-    this->width = width;
-    this->height = height;
-
-    for (std::size_t pos = 0; pos < width * height; ++pos) {
-        Entity entity;
-        input_file.read((char*)&entity, sizeof(int));
-
-        tiles.push_back(entity);
+Map::Map(std::size_t level_number, Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
+    switch(level_number) {
+        case 1:
+            LoadLevel1(obstacle, obstacle_array);
+            break;
+        case 2:
+            break;
     }
-
-    input_file.close();
 }
 
-void Map::Save(const std::string& filename) {
-    std::ofstream output_file;
-    output_file.open(filename, std::ios::out | std::ios::binary);
+void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
+    obstacle.destroyable = false;
+    obstacle.sprite.setColor(sf::Color(100, 100, 100));
+    for (auto i = 0u; i < GAME_HEIGHT; i += 32) {
+        obstacle.rect.setPosition(GAME_WIDTH-32 ,i);
+        obstacle_array.push_back(obstacle);
+        for (auto i = 0u; i < GAME_HEIGHT; i +=32) {
+            obstacle.rect.setPosition(0 ,i);
+            obstacle_array.push_back(obstacle);
+        }
+    }
+}
 
-    // for (auto obstacle : obstacles) {
-    //     output_file.write((char*)&entity, sizeof(int));
-    // }
+void Map::LoadLevel2(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
     
-    output_file.close();
 }

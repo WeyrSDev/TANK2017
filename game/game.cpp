@@ -1,6 +1,8 @@
 #include "game.h"
 #include "stdafx.h"
 
+
+
 void Game::Start() {
     srand(std::time(0));
     sf::Keyboard::setVirtualKeyboardVisible(true);
@@ -49,7 +51,7 @@ void Game::Start() {
     player2.left = sf::Keyboard::J;
     player2.right = sf::Keyboard::L;
     player2.fire = sf::Keyboard::Return;
-    
+
     std::vector<Player>::const_iterator p_iter;
     std::vector<Player> player_array;
     player_array.push_back(player1);
@@ -63,15 +65,11 @@ void Game::Start() {
     // Obstacle
     std::vector<Obstacle>::const_iterator e_iter;
     std::vector<Obstacle> obstacle_array;
-    
-    // Placeholder obstacle generation
     class Obstacle obstacle;
-    obstacle_array.push_back(obstacle);
-    // Obstacle generation
-    // for (auto i = 0u; i < 35; ++i) {
-    //     obstacle.rect.setPosition(GenerateRandom(GAME_WIDTH), GenerateRandom(GAME_HEIGHT));
-    //     obstacle_array.push_back(obstacle);
-    // }
+
+    // Map generation
+    // Map outside
+    Map map(1, obstacle, obstacle_array);
 
     // Clocks
     sf::Clock frame_clock;
@@ -124,11 +122,13 @@ void Game::Start() {
             std::size_t counter2 = 0;
             for (e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
                 if (Collision::PixelPerfectTest(projectile_array[counter].sprite, obstacle_array[counter2].sprite)) {
-                    projectile_array[counter].alive = false;
-                    obstacle_array[counter2].hp -= projectile_array[counter].attack_damage;
-                    if (obstacle_array[counter2].hp <= 0) {
-                        obstacle_array[counter2].alive = false; // rip
+                    if (obstacle_array[counter2].destroyable) {
+                        obstacle_array[counter2].hp -= projectile_array[counter].attack_damage;
+                        if (obstacle_array[counter2].hp <= 0) {
+                            obstacle_array[counter2].alive = false; // rip
+                        }
                     }
+                    projectile_array[counter].alive = false;
                 }
                 ++counter2;
             }
@@ -168,21 +168,21 @@ void Game::Start() {
         // Missile creation (ENTER key) player2
         player2.Fire(projectile, projectile_array, Projectile::P2);
 
-        // Obstacle drawing
-        counter = 0;
-        for(e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
-            obstacle_array[counter].Update(elapsed_time);
-            // window.draw(obstacle_array[counter].rect); // DEBUG
-            window.draw(obstacle_array[counter].sprite);
-            ++counter;
-        }
-
         // Missile drawing
         counter = 0;
         for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
             projectile_array[counter].Update(elapsed_time);
             // window.draw(projectile_array[counter].rect); // DEBUG
             window.draw(projectile_array[counter].sprite);
+            ++counter;
+        }
+
+        // Obstacle drawing
+        counter = 0;
+        for(e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
+            obstacle_array[counter].Update(elapsed_time);
+            // window.draw(obstacle_array[counter].rect); // DEBUG
+            window.draw(obstacle_array[counter].sprite);
             ++counter;
         }
 

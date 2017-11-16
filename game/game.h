@@ -7,6 +7,7 @@
 #include "obstacle.h"
 #include "collision.h"
 #include "rand.h"
+#include "map.h"
 
 class Game {
 public:
