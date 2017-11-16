@@ -13,25 +13,25 @@ void Game::Start() {
         std::cout << "Error loading texture!" << "\n";
     }
     background_texture.setRepeated(true);
-    sf::Sprite background(background_texture);
+    background.setTexture(background_texture);
     background.setTextureRect(sf::IntRect(0, 0, GAME_WIDTH, GAME_HEIGHT));
 
     // Font loading
-    sf::Font font;
     if (!font.loadFromFile(TITLEFONT_PATH)) {
         std::cout << "Error loading font!" << "\n";
     }
 
     // Popup message
-    sf::Text message("", font);
+    message.setFont(font);
     message.setCharacterSize(100);
     message.setStyle(sf::Text::Bold);
     message.setFillColor(sf::Color(10, 100, 200));
     message.setPosition(GAME_WIDTH/4, 0);
     // message.setString("DEBUG"); // DEBUG
 
+    GameStates game_state = GameStates::STATE_PLAY;
+
     // Players configuration
-    class Player player1;
     player1.rect.setPosition(32 * 3, 32 * 3);
     player1.sprite.setColor(sf::Color(0, 102, 51));
     player1.forward = sf::Keyboard::W;
@@ -40,7 +40,6 @@ void Game::Start() {
     player1.right = sf::Keyboard::D;
     player1.fire = sf::Keyboard::Space;
 
-    class Player player2;
     player2.rect.setPosition(GAME_WIDTH - 32 * 3, GAME_HEIGHT - 32 * 3);
     player2.rect.setRotation(180);
     player2.angle = 180;
@@ -56,22 +55,8 @@ void Game::Start() {
     player_array.push_back(player1);
     player_array.push_back(player2);
 
-    // Projectiles
-    class Projectile projectile;
-    std::vector<Projectile>::const_iterator iter;
-    std::vector<Projectile> projectile_array;
-
-    // Obstacle
-    std::vector<Obstacle>::const_iterator e_iter;
-    std::vector<Obstacle> obstacle_array;
-    class Obstacle obstacle;
-
     // Map selection
     Map map(1, obstacle, obstacle_array);
-
-    // Clocks
-    sf::Clock frame_clock;
-    sf::Clock game_clock;
 
     // Main game loop
     while (window.isOpen()) {
@@ -86,106 +71,122 @@ void Game::Start() {
             }
         }
 
-        sf::Time elapsed_time = frame_clock.restart(); // Frame time
-
-        window.clear();
-        window.draw(background);
-
-        // Projectile collision
-        std::size_t counter = 0;
-        for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
-            // Projectile-P1 collision
-            if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player1.sprite) && projectile_array[counter].Owner != Projectile::P1) {
-                player1.Hit(counter, projectile_array);
-                if (player1.hp <= 0) {
-                    projectile_array[counter].alive = false;
-                    player1.alive = false; // rip
-                    message.setString("P2 won!");
-                }
-                projectile_array.erase(iter);
+        switch (game_state) {
+            case STATE_MENU:
                 break;
-            // Projectile-P2 collision
-            } else if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player2.sprite) && projectile_array[counter].Owner != Projectile::P2) {
-                player2.Hit(counter, projectile_array);
-                if (player2.hp <= 0) {
-                    projectile_array[counter].alive = false;
-                    player2.alive = false; // rip
-                    message.setString("P1 won!");
-                }
-                projectile_array.erase(iter);
+            case STATE_LEVEL_SELECT:
                 break;
+            case STATE_PLAY:
+                GameLoop(window);
+                break;
+            case STATE_EXIT:
+                break;
+        }
+
+        
+    }
+}
+
+void Game::GameLoop(sf::RenderWindow& window) {
+    sf::Time elapsed_time = frame_clock.restart(); // Frame time
+
+    window.clear();
+    window.draw(background);
+
+    // Projectile collision
+    std::size_t counter = 0;
+    for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
+        // Projectile-P1 collision
+        if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player1.sprite) && projectile_array[counter].Owner != Projectile::P1) {
+            player1.Hit(counter, projectile_array);
+            if (player1.hp <= 0) {
+                projectile_array[counter].alive = false;
+                player1.alive = false; // rip
+                message.setString("P2 won!");
             }
+            projectile_array.erase(iter);
+            break;
+        // Projectile-P2 collision
+        } else if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player2.sprite) && projectile_array[counter].Owner != Projectile::P2) {
+            player2.Hit(counter, projectile_array);
+            if (player2.hp <= 0) {
+                projectile_array[counter].alive = false;
+                player2.alive = false; // rip
+                message.setString("P1 won!");
+            }
+            projectile_array.erase(iter);
+            break;
+        }
 
-            // Projectile-obstacle collision
-            std::size_t counter2 = 0;
-            for (e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
-                if (Collision::PixelPerfectTest(projectile_array[counter].sprite, obstacle_array[counter2].sprite) && !obstacle_array[counter2].decoration) {
-                    if (obstacle_array[counter2].destroyable) {
-                        obstacle_array[counter2].hp -= projectile_array[counter].attack_damage;
-                        projectile_array[counter].alive = false;
-                        if (obstacle_array[counter2].hp <= 0) {
-                            obstacle_array[counter2].alive = false; // rip
-                        }
+        // Projectile-obstacle collision
+        std::size_t counter2 = 0;
+        for (e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
+            if (Collision::PixelPerfectTest(projectile_array[counter].sprite, obstacle_array[counter2].sprite) && !obstacle_array[counter2].decoration) {
+                if (obstacle_array[counter2].destroyable) {
+                    obstacle_array[counter2].hp -= projectile_array[counter].attack_damage;
+                    projectile_array[counter].alive = false;
+                    if (obstacle_array[counter2].hp <= 0) {
+                        obstacle_array[counter2].alive = false; // rip
                     }
                 }
-                ++counter2;
             }
-            ++counter;
+            ++counter2;
         }
-
-        // Obstacle deletion
-        counter = 0;
-        for(e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
-            if (!obstacle_array[counter].alive) {
-                obstacle_array.erase(e_iter);
-                break;
-            }
-            ++counter;
-        }
-
-        // Projectile deletion
-        counter = 0;
-        for(iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
-            if (!projectile_array[counter].alive || projectile_array[counter].rect.getPosition().x > GAME_WIDTH ||
-                projectile_array[counter].rect.getPosition().y > GAME_HEIGHT) {
-                projectile_array.erase(iter);
-                break;
-            }
-            ++counter;
-        }
-
-        // Player updates
-        player1.Update(elapsed_time, obstacle_array);
-        player2.Update(elapsed_time, obstacle_array);
-        
-        // Missile creation (SPACE key) player1
-        player1.Fire(projectile, projectile_array, Projectile::P1);
-        // Missile creation (ENTER key) player2
-        player2.Fire(projectile, projectile_array, Projectile::P2);
-
-        // Missile drawing
-        counter = 0;
-        for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
-            projectile_array[counter].Update(elapsed_time);
-            // window.draw(projectile_array[counter].rect); // DEBUG
-            window.draw(projectile_array[counter].sprite);
-            ++counter;
-        }
-
-        // Player drawing
-        window.draw(player1.sprite);
-        window.draw(player2.sprite);
-
-        // Obstacle drawing
-        counter = 0;
-        for(e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
-            obstacle_array[counter].Update(elapsed_time);
-            // window.draw(obstacle_array[counter].rect); // DEBUG
-            window.draw(obstacle_array[counter].sprite);
-            ++counter;
-        }
-
-        window.draw(message); // Popup message
-        window.display();
+        ++counter;
     }
+
+    // Obstacle deletion
+    counter = 0;
+    for(e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
+        if (!obstacle_array[counter].alive) {
+            obstacle_array.erase(e_iter);
+            break;
+        }
+        ++counter;
+    }
+
+    // Projectile deletion
+    counter = 0;
+    for(iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
+        if (!projectile_array[counter].alive || projectile_array[counter].rect.getPosition().x > GAME_WIDTH ||
+            projectile_array[counter].rect.getPosition().y > GAME_HEIGHT) {
+            projectile_array.erase(iter);
+            break;
+        }
+        ++counter;
+    }
+
+    // Player updates
+    player1.Update(elapsed_time, obstacle_array);
+    player2.Update(elapsed_time, obstacle_array);
+    
+    // Missile creation (SPACE key) player1
+    player1.Fire(projectile, projectile_array, Projectile::P1);
+    // Missile creation (ENTER key) player2
+    player2.Fire(projectile, projectile_array, Projectile::P2);
+
+    // Missile drawing
+    counter = 0;
+    for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
+        projectile_array[counter].Update(elapsed_time);
+        // window.draw(projectile_array[counter].rect); // DEBUG
+        window.draw(projectile_array[counter].sprite);
+        ++counter;
+    }
+
+    // Player drawing
+    window.draw(player1.sprite);
+    window.draw(player2.sprite);
+
+    // Obstacle drawing
+    counter = 0;
+    for(e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
+        obstacle_array[counter].Update(elapsed_time);
+        // window.draw(obstacle_array[counter].rect); // DEBUG
+        window.draw(obstacle_array[counter].sprite);
+        ++counter;
+    }
+
+    window.draw(message); // Popup message
+    window.display();
 }

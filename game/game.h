@@ -11,5 +11,32 @@
 
 class Game {
 public:
-    static void Start();
+    void Start();
+    void GameLoop(sf::RenderWindow& window);
+
+    enum GameStates {
+        STATE_MENU,
+        STATE_LEVEL_SELECT,
+        STATE_PLAY,
+        STATE_EXIT
+    };
+
+    GameStates game_state = GameStates::STATE_MENU;
+
+    class Player player1;
+    class Player player2;
+    class Obstacle obstacle;
+    class Projectile projectile;
+
+    std::vector<Obstacle>::const_iterator e_iter;
+    std::vector<Obstacle> obstacle_array;
+
+    std::vector<Projectile>::const_iterator iter;
+    std::vector<Projectile> projectile_array;
+
+    sf::Sprite background;
+    sf::Font font;
+    sf::Text message;
+    sf::Clock frame_clock;
+    sf::Clock game_clock;
 };

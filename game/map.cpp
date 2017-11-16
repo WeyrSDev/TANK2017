@@ -6,6 +6,10 @@ Map::Map(std::size_t level_number, Obstacle& obstacle, std::vector<Obstacle>& ob
             LoadLevel1(obstacle, obstacle_array);
             break;
         case 2:
+            LoadLevel2(obstacle, obstacle_array);
+            break;
+        case 3:
+            LoadLevel3(obstacle, obstacle_array);
             break;
     }
 
@@ -34,7 +38,7 @@ void Map::GenerateBorders(Obstacle& obstacle, std::vector<Obstacle>& obstacle_ar
         obstacle.rect.setPosition(GAME_WIDTH-32, i);
         obstacle_array.push_back(obstacle);
     }
-    
+
     // Generate horizontal border walls
     for (auto i = 32u; i < GAME_WIDTH; i+=32) {
         obstacle.rect.setPosition(i, 0);
@@ -172,8 +176,29 @@ void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
 }
 
 // >---------- FOUNTAIN LEVEL ----------<
+// TODO
 void Map::LoadLevel2(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
     obstacle.rect.setPosition(100, 100);
     obstacle_array.push_back(obstacle);
+    GenerateBorders(obstacle, obstacle_array);
+}
+
+// >---------- RANDOM LEVEL ----------<
+void Map::LoadLevel3(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
+    obstacle.tiletype = Obstacle::Type::Wall;
+    obstacle.decoration = false;
+    obstacle.destroyable = true;
+    obstacle.sprite.setTexture(wall_texture);
+    obstacle.sprite.setColor(sf::Color(200, 200, 200));
+
+    for (auto i = 32u; i < GAME_WIDTH-32; i+=32) {
+        obstacle.rect.setPosition(i, GenerateRandom(GAME_HEIGHT-32*2));
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(i, GenerateRandom(GAME_HEIGHT-32*2));
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(i, GenerateRandom(GAME_HEIGHT-32*2));
+        obstacle_array.push_back(obstacle);
+    }
+
     GenerateBorders(obstacle, obstacle_array);
 }

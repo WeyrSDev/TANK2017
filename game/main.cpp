@@ -2,5 +2,6 @@
 #include <iostream>
 
 int main() {
-    Game::Start();
+    Game game;
+    game.Start();
 }
