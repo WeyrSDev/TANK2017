@@ -32,7 +32,7 @@ void Game::Start() {
 
     // Players configuration
     class Player player1;
-    player1.rect.setPosition(32 * 2, 32 * 2);
+    player1.rect.setPosition(32 * 3, 32 * 3);
     player1.sprite.setColor(sf::Color(0, 102, 51));
     player1.forward = sf::Keyboard::W;
     player1.backwards = sf::Keyboard::S;
@@ -41,7 +41,7 @@ void Game::Start() {
     player1.fire = sf::Keyboard::Space;
 
     class Player player2;
-    player2.rect.setPosition(GAME_WIDTH - 32 * 2, GAME_HEIGHT - 32 * 2);
+    player2.rect.setPosition(GAME_WIDTH - 32 * 3, GAME_HEIGHT - 32 * 3);
     player2.rect.setRotation(180);
     player2.angle = 180;
     player2.sprite.setColor(sf::Color(0, 102, 110));
@@ -122,11 +122,11 @@ void Game::Start() {
                 if (Collision::PixelPerfectTest(projectile_array[counter].sprite, obstacle_array[counter2].sprite) && !obstacle_array[counter2].decoration) {
                     if (obstacle_array[counter2].destroyable) {
                         obstacle_array[counter2].hp -= projectile_array[counter].attack_damage;
+                        projectile_array[counter].alive = false;
                         if (obstacle_array[counter2].hp <= 0) {
                             obstacle_array[counter2].alive = false; // rip
                         }
                     }
-                    projectile_array[counter].alive = false;
                 }
                 ++counter2;
             }

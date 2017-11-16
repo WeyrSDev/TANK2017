@@ -18,6 +18,9 @@ Map::Map(std::size_t level_number, Obstacle& obstacle, std::vector<Obstacle>& ob
     if (!wall_texture.loadFromFile(BRICK_SPRITE)) {
         std::cout << "Error loading wall texture!" << "\n";
     }
+    if (!water_texture.loadFromFile(WATER_SPRITE)) {
+        std::cout << "Error loading water texture!" << "\n";
+    }
 }
 
 void Map::GenerateBorders(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
@@ -31,7 +34,7 @@ void Map::GenerateBorders(Obstacle& obstacle, std::vector<Obstacle>& obstacle_ar
         obstacle.rect.setPosition(GAME_WIDTH-32, i);
         obstacle_array.push_back(obstacle);
     }
-
+    
     // Generate horizontal border walls
     for (auto i = 32u; i < GAME_WIDTH; i+=32) {
         obstacle.rect.setPosition(i, 0);
@@ -41,48 +44,84 @@ void Map::GenerateBorders(Obstacle& obstacle, std::vector<Obstacle>& obstacle_ar
     }
 }
 
+// >---------- BRIDGE LEVEL ----------<
 void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
+    // ----- BRIDGE -----
+    obstacle.tiletype = Obstacle::Type::Wall;
+    obstacle.decoration = false;
+    obstacle.destroyable = true;
+
+    // Vertical walls
+    // Middle walls
+    for (auto i = 32u; i < GAME_HEIGHT/2 - 32 * 2; i+=32) {
+        obstacle.rect.setPosition(GAME_WIDTH/2-32 * 2, i);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2+32 * 2, i);
+        obstacle_array.push_back(obstacle);
+    }
+    for (auto i = GAME_HEIGHT/2 + 32 * 3; i < GAME_HEIGHT-32; i+=32) {
+        obstacle.rect.setPosition(GAME_WIDTH/2-32 * 2, i);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2+32 * 2, i);
+        obstacle_array.push_back(obstacle);
+    }
+
+    // ----- WATER -----
+    obstacle.tiletype = Obstacle::Type::Water;
+    obstacle.decoration = false;
+    obstacle.destroyable = false;
+    obstacle.sprite.setTexture(water_texture);
+    // Upper river
+    for (auto i = 32u; i < GAME_HEIGHT/2 - 32 * 2; i+=32) {
+        obstacle.rect.setPosition(GAME_WIDTH/2-32, i);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2+32, i);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2, i);
+        obstacle_array.push_back(obstacle);
+    }
+
+    // Lower river
+    for (auto i = GAME_HEIGHT/2 + 32 * 3; i < GAME_HEIGHT-32; i+=32) {
+        obstacle.rect.setPosition(GAME_WIDTH/2-32, i);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2+32, i);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2, i);
+        obstacle_array.push_back(obstacle);
+    }
+
     // ----- BRICKS -----
+    obstacle.tiletype = Obstacle::Type::Wall;
     obstacle.decoration = false;
     obstacle.destroyable = true;
     obstacle.sprite.setTexture(wall_texture);
     obstacle.sprite.setColor(sf::Color(200, 200, 200));
 
-    // Vertical walls
-    for (auto i = 32u * 5; i < GAME_HEIGHT-32 * 6; i+=32) {
-        // Left wall
-        obstacle.rect.setPosition(32 * 5, i);
-        obstacle_array.push_back(obstacle);
-        obstacle.rect.setPosition(32 * 6, i);
-        obstacle_array.push_back(obstacle);
-
-        // Right wall
-        obstacle.rect.setPosition(GAME_WIDTH - 32 * 5, i);
-        obstacle_array.push_back(obstacle);
-        obstacle.rect.setPosition(GAME_WIDTH - 32 * 6, i);
-        obstacle_array.push_back(obstacle);
-    }
-
-    for (auto i = 32u * 4; i < GAME_HEIGHT-32*4; i+=32) {
-        // Midle left wall
-        obstacle.rect.setPosition(GAME_WIDTH/2 - 32 * 3, i);
-        obstacle_array.push_back(obstacle);
-
-        // Midle right wall
-        obstacle.rect.setPosition(GAME_WIDTH/2 + 32 * 3, i);
-        obstacle_array.push_back(obstacle);
-    }
-
     // Horizontal walls
-    for (auto i = GAME_WIDTH/4; i < GAME_WIDTH - GAME_WIDTH/4; i+=32) {
+    for (auto i = 32u * 2; i < GAME_WIDTH - 32 * 2; i+=32) {
         obstacle.rect.setPosition(i, 32);
         obstacle_array.push_back(obstacle);
         obstacle.rect.setPosition(i, GAME_HEIGHT - 32 * 2);
         obstacle_array.push_back(obstacle);
     }
 
+    // Vertical strips
+    for (auto i = GAME_HEIGHT/3; i < GAME_HEIGHT - GAME_HEIGHT/3; i+=32) {
+        obstacle.rect.setPosition(GAME_WIDTH/2 - 32 * 9, i);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2 + 32 * 9, i);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2 - 32 * 10, i);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2 + 32 * 10, i);
+        obstacle_array.push_back(obstacle);
+    }
+
     // ----- FOLLIAGE -----
+    obstacle.tiletype = Obstacle::Type::Foliage;
     obstacle.decoration = true;
+    obstacle.destroyable = false;
     obstacle.sprite.setTexture(leaf_texture);
     obstacle.sprite.setColor(sf::Color(240, 240, 240));
 
@@ -91,12 +130,6 @@ void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
         obstacle.rect.setPosition(32, i);
         obstacle_array.push_back(obstacle);
         obstacle.rect.setPosition(GAME_WIDTH-32*2, i);
-        obstacle_array.push_back(obstacle);
-        obstacle.rect.setPosition(GAME_WIDTH/2-32, i);
-        obstacle_array.push_back(obstacle);
-        obstacle.rect.setPosition(GAME_WIDTH/2+32, i);
-        obstacle_array.push_back(obstacle);
-        obstacle.rect.setPosition(GAME_WIDTH/2, i);
         obstacle_array.push_back(obstacle);
     }
 
@@ -138,6 +171,7 @@ void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
     GenerateBorders(obstacle, obstacle_array);
 }
 
+// >---------- FOUNTAIN LEVEL ----------<
 void Map::LoadLevel2(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
     obstacle.rect.setPosition(100, 100);
     obstacle_array.push_back(obstacle);

@@ -12,5 +12,6 @@ static const int GAME_HEIGHT = 700;
 #define BORDER_SPRITE   "media/img/wall.png"
 #define LEAF_SPRITE     "media/img/leaves.png"
 #define BRICK_SPRITE    "media/img/brick.png"
+#define WATER_SPRITE    "media/img/water.png"
 
 #define PROJECTILE_PATH "media/img/projectile.png"

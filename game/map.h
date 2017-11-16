@@ -13,4 +13,5 @@ private:
     sf::Texture leaf_texture;
     sf::Texture border_texture;
     sf::Texture wall_texture;
+    sf::Texture water_texture;
 };
