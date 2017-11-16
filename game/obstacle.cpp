@@ -2,7 +2,7 @@
 #include "rand.h"
 
 Obstacle::Obstacle() {
-    Load(WALL_SPRITE);
+    Load(BORDER_SPRITE);
     assert(Loaded());
 
     rect.setSize(sf::Vector2f(sprite.getLocalBounds().width, sprite.getLocalBounds().width));

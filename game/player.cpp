@@ -43,7 +43,7 @@ void Player::Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array
             rect.move(move_x, move_y);
         }
         if (sf::Keyboard::isKeyPressed(backwards)) {
-            rect.move(-move_x, -move_y);
+            rect.move(-move_x/2, -move_y/2);
         }
 
         if (sf::Keyboard::isKeyPressed(left)) {

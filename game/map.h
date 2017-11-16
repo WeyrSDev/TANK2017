@@ -11,4 +11,6 @@ private:
     void LoadLevel2(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array);
 
     sf::Texture leaf_texture;
+    sf::Texture border_texture;
+    sf::Texture wall_texture;
 };
