@@ -1,16 +1,11 @@
 #include "game.h"
 #include "stdafx.h"
 
-void Game::Start() {
-    srand(std::time(0));
-    sf::Keyboard::setVirtualKeyboardVisible(true);
-    sf::RenderWindow window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "TANK2017"); // sf::Style::Fullscreen
-    window.setFramerateLimit(60);
-
+Game::Game():
+    window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "TANK2017"),
+    game_state(GameStates::STATE_MENU) {
     LoadResources();
-
-    GameStates game_state = GameStates::STATE_MENU;
-
+    
     // Players configuration
     player1.rect.setPosition(32 * 3, 32 * 3);
     player1.sprite.setColor(sf::Color(0, 102, 51));
@@ -30,14 +25,19 @@ void Game::Start() {
     player2.right = sf::Keyboard::L;
     player2.fire = sf::Keyboard::Return;
 
+    Start();
+}
+
+void Game::Start() {
+    srand(std::time(0));
+    sf::Keyboard::setVirtualKeyboardVisible(true);
+    window.setFramerateLimit(60);
+
     std::vector<Player>::const_iterator p_iter;
     std::vector<Player> player_array;
     player_array.push_back(player1);
     player_array.push_back(player2);
-
-    // Map selection
-    Map map(1, obstacle, obstacle_array);
-
+    
     // Main game loop
     while (window.isOpen()) {
         sf::Event event;
@@ -46,7 +46,44 @@ void Game::Start() {
                 window.close();
             }
 
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+            if (game_state == GameStates::STATE_MENU && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                
+                // Esc while in menu closes the game
+                window.close();
+
+            } else if (game_state == GameStates::STATE_MENU && event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
+                
+                // Press space to select the level
+                game_state = GameStates::STATE_LEVEL_SELECT;
+
+            } else if (game_state == GameStates::STATE_PLAY && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                
+                // Press esc while playing to go back to the menu
+                game_state = GameStates::STATE_MENU;
+                while (!obstacle_array.empty()) {
+                    obstacle_array.pop_back();
+                }
+
+            } else if (game_state == GameStates::STATE_LEVEL_SELECT) {
+                
+                // Press esc while selecting to go back to menu
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                    game_state = GameStates::STATE_MENU;
+                } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num1) {
+                    // Map selection
+                    game_map = new Map(1, obstacle, obstacle_array);
+                    game_state = GameStates::STATE_PLAY;
+                } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num2) {
+                    // Map selection
+                    game_map = new Map(2, obstacle, obstacle_array);
+                    game_state = GameStates::STATE_PLAY;
+                } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num3) {
+                    // Map selection
+                    game_map = new Map(3, obstacle, obstacle_array);
+                    game_state = GameStates::STATE_PLAY;
+                }
+
+            } else if (game_state == GameStates::STATE_EXIT) {
                 window.close();
             }
         }
@@ -56,6 +93,7 @@ void Game::Start() {
                 TitleScreen(window);
                 break;
             case STATE_LEVEL_SELECT:
+                LevelSelect(window);
                 break;
             case STATE_PLAY:
                 GameLoop(window);
@@ -176,6 +214,19 @@ void Game::TitleScreen(sf::RenderWindow& window) {
     window.display();
 }
 
+void Game::LevelSelect(sf::RenderWindow& window) {
+    window.clear();
+
+    // Map select
+
+    window.draw(levelselect);
+    window.draw(level1);
+    window.draw(level2);
+    window.draw(level3);
+
+    window.display();
+}
+
 void Game::LoadResources() {
     // Texture loading
     if (!background_texture.loadFromFile(BACKGROUND_PATH)) {
@@ -186,23 +237,57 @@ void Game::LoadResources() {
     background.setTextureRect(sf::IntRect(0, 0, GAME_WIDTH, GAME_HEIGHT));
 
     // Font loading
-    if (!font.loadFromFile(TITLEFONT_PATH)) {
-        std::cout << "Error loading font!" << "\n";
+    if (!title_font.loadFromFile(TITLEFONT_PATH)) {
+        std::cout << "Error loading title font!" << "\n";
+    }
+    if (!digital_font.loadFromFile(DIGITALFONT_PATH)) {
+        std::cout << "Error loading digital font!" << "\n";
+    }
+    if (!level_font.loadFromFile(LEVELFONT_PATH)) {
+        std::cout << "Error loading levelfont" << "\n";
     }
 
     // Popup message
-    message.setFont(font);
+    message.setFont(digital_font);
     message.setCharacterSize(100);
     message.setStyle(sf::Text::Bold);
     message.setFillColor(sf::Color(5, 50, 150));
     message.setPosition(GAME_WIDTH/4, GAME_HEIGHT/2);
     // message.setString("DEBUG"); // DEBUG
 
-    // Title font
-    title.setFont(font);
+    // Title message
+    title.setFont(title_font);
     title.setString("TANK2017");
     title.setCharacterSize(100);
     title.setStyle(sf::Text::Bold);
-    title.setFillColor(sf::Color(5, 50, 150));
+    title.setFillColor(sf::Color(100, 50, 150));
     title.setPosition(GAME_WIDTH/4, GAME_HEIGHT/2 - GAME_HEIGHT/4);
+
+    // Level select message
+    levelselect.setFont(level_font);
+    levelselect.setString("- Select level -");
+    levelselect.setCharacterSize(65);
+    levelselect.setFillColor(sf::Color(10, 100, 20));
+    levelselect.setPosition(0, GAME_HEIGHT/2 - GAME_HEIGHT/3);
+
+    level1.setFont(digital_font);
+    level1.setString("Level 1 - Bridge");
+    level1.setCharacterSize(40);
+    level1.setFillColor(sf::Color(10, 50, 100));
+    auto previous_pos = levelselect.getPosition();
+    level1.setPosition(previous_pos.x, previous_pos.y + levelselect.getLocalBounds().height + 100);
+
+    level2.setFont(digital_font);
+    level2.setString("Level 2 - Fountain");
+    level2.setCharacterSize(40);
+    level2.setFillColor(sf::Color(10, 50, 100));
+    previous_pos = level1.getPosition();
+    level2.setPosition(previous_pos.x, previous_pos.y + levelselect.getLocalBounds().height);
+
+    level3.setFont(digital_font);
+    level3.setString("Level 3 - ?");
+    level3.setCharacterSize(40);
+    level3.setFillColor(sf::Color(10, 50, 100));
+    previous_pos = level2.getPosition();
+    level3.setPosition(previous_pos.x, previous_pos.y + levelselect.getLocalBounds().height);
 }

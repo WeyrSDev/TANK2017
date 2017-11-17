@@ -3,6 +3,7 @@
 
 class Map {
 public:
+    Map();
     Map(std::size_t level_number, Obstacle& obstacle, std::vector<Obstacle>& obstacle_array);
     
 private:

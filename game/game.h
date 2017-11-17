@@ -11,24 +11,27 @@
 
 class Game {
 public:
+    Game();
     void Start();
     void GameLoop(sf::RenderWindow& window);
     void TitleScreen(sf::RenderWindow& window);
+    void LevelSelect(sf::RenderWindow& window);
     void LoadResources();
 
     enum GameStates {
         STATE_MENU,
         STATE_LEVEL_SELECT,
         STATE_PLAY,
+        STATE_PAUSE,
         STATE_EXIT
     };
 
     GameStates game_state = GameStates::STATE_MENU;
 
-    class Player player1;
-    class Player player2;
-    class Obstacle obstacle;
-    class Projectile projectile;
+    Player player1;
+    Player player2;
+    Obstacle obstacle;
+    Projectile projectile;
 
     std::vector<Obstacle>::const_iterator e_iter;
     std::vector<Obstacle> obstacle_array;
@@ -36,11 +39,22 @@ public:
     std::vector<Projectile>::const_iterator iter;
     std::vector<Projectile> projectile_array;
 
+    sf::RenderWindow window;
     sf::Texture background_texture;
     sf::Sprite background;
-    sf::Font font;
+
+    sf::Font title_font;
+    sf::Font digital_font;
+    sf::Font level_font;
     sf::Text message;
     sf::Text title;
+    sf::Text levelselect;
+    sf::Text level1;
+    sf::Text level2;
+    sf::Text level3;
+
+    Map* game_map;
+
     sf::Clock frame_clock;
     sf::Clock game_clock;
 };

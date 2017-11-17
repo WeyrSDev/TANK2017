@@ -111,7 +111,7 @@ void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
     }
 
     // Vertical strips
-    for (auto i = GAME_HEIGHT/3; i < GAME_HEIGHT - GAME_HEIGHT/3; i+=32) {
+    for (auto i = GAME_HEIGHT/5; i < GAME_HEIGHT - GAME_HEIGHT/5; i+=32) {
         obstacle.rect.setPosition(GAME_WIDTH/2 - 32 * 9, i);
         obstacle_array.push_back(obstacle);
         obstacle.rect.setPosition(GAME_WIDTH/2 + 32 * 9, i);

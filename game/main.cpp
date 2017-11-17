@@ -2,6 +2,5 @@
 #include <iostream>
 
 int main() {
-    Game game;
-    game.Start();
+    Game* game = new Game();
 }
