@@ -13,6 +13,8 @@ class Game {
 public:
     void Start();
     void GameLoop(sf::RenderWindow& window);
+    void TitleScreen(sf::RenderWindow& window);
+    void LoadResources();
 
     enum GameStates {
         STATE_MENU,
@@ -34,9 +36,11 @@ public:
     std::vector<Projectile>::const_iterator iter;
     std::vector<Projectile> projectile_array;
 
+    sf::Texture background_texture;
     sf::Sprite background;
     sf::Font font;
     sf::Text message;
+    sf::Text title;
     sf::Clock frame_clock;
     sf::Clock game_clock;
 };

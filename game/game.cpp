@@ -7,29 +7,9 @@ void Game::Start() {
     sf::RenderWindow window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "TANK2017"); // sf::Style::Fullscreen
     window.setFramerateLimit(60);
 
-    // Texture loading
-    sf::Texture background_texture;
-    if (!background_texture.loadFromFile(BACKGROUND_PATH)) {
-        std::cout << "Error loading texture!" << "\n";
-    }
-    background_texture.setRepeated(true);
-    background.setTexture(background_texture);
-    background.setTextureRect(sf::IntRect(0, 0, GAME_WIDTH, GAME_HEIGHT));
+    LoadResources();
 
-    // Font loading
-    if (!font.loadFromFile(TITLEFONT_PATH)) {
-        std::cout << "Error loading font!" << "\n";
-    }
-
-    // Popup message
-    message.setFont(font);
-    message.setCharacterSize(100);
-    message.setStyle(sf::Text::Bold);
-    message.setFillColor(sf::Color(10, 100, 200));
-    message.setPosition(GAME_WIDTH/4, 0);
-    // message.setString("DEBUG"); // DEBUG
-
-    GameStates game_state = GameStates::STATE_PLAY;
+    GameStates game_state = GameStates::STATE_MENU;
 
     // Players configuration
     player1.rect.setPosition(32 * 3, 32 * 3);
@@ -73,6 +53,7 @@ void Game::Start() {
 
         switch (game_state) {
             case STATE_MENU:
+                TitleScreen(window);
                 break;
             case STATE_LEVEL_SELECT:
                 break;
@@ -82,8 +63,6 @@ void Game::Start() {
             case STATE_EXIT:
                 break;
         }
-
-        
     }
 }
 
@@ -189,4 +168,41 @@ void Game::GameLoop(sf::RenderWindow& window) {
 
     window.draw(message); // Popup message
     window.display();
+}
+
+void Game::TitleScreen(sf::RenderWindow& window) {
+    window.clear();
+    window.draw(title);
+    window.display();
+}
+
+void Game::LoadResources() {
+    // Texture loading
+    if (!background_texture.loadFromFile(BACKGROUND_PATH)) {
+        std::cout << "Error loading texture!" << "\n";
+    }
+    background_texture.setRepeated(true);
+    background.setTexture(background_texture);
+    background.setTextureRect(sf::IntRect(0, 0, GAME_WIDTH, GAME_HEIGHT));
+
+    // Font loading
+    if (!font.loadFromFile(TITLEFONT_PATH)) {
+        std::cout << "Error loading font!" << "\n";
+    }
+
+    // Popup message
+    message.setFont(font);
+    message.setCharacterSize(100);
+    message.setStyle(sf::Text::Bold);
+    message.setFillColor(sf::Color(5, 50, 150));
+    message.setPosition(GAME_WIDTH/4, GAME_HEIGHT/2);
+    // message.setString("DEBUG"); // DEBUG
+
+    // Title font
+    title.setFont(font);
+    title.setString("TANK2017");
+    title.setCharacterSize(100);
+    title.setStyle(sf::Text::Bold);
+    title.setFillColor(sf::Color(5, 50, 150));
+    title.setPosition(GAME_WIDTH/4, GAME_HEIGHT/2 - GAME_HEIGHT/4);
 }

@@ -5,7 +5,7 @@ static const int GAME_HEIGHT = 700;
 // static const int GAME_HEIGHT = 768;
 
 #define BACKGROUND_PATH "media/img/grass.png"
-#define TITLEFONT_PATH  "media/fonts/digitalfont.ttf"
+#define TITLEFONT_PATH  "media/fonts/game_font.ttf"
 
 #define PLAYER_PATH     "media/img/tank.png"
 
