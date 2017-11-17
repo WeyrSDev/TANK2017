@@ -16,7 +16,9 @@ public:
     void GameLoop(sf::RenderWindow& window);
     void TitleScreen(sf::RenderWindow& window);
     void LevelSelect(sf::RenderWindow& window);
+    
     void LoadResources();
+    void ResetLevel();
 
     enum GameStates {
         STATE_MENU,
@@ -38,6 +40,9 @@ public:
 
     std::vector<Projectile>::const_iterator iter;
     std::vector<Projectile> projectile_array;
+
+    std::vector<Player>::const_iterator p_iter;
+    std::vector<Player> player_array;
 
     sf::RenderWindow window;
     sf::Texture background_texture;

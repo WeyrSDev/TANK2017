@@ -6,25 +6,7 @@ Game::Game():
     game_state(GameStates::STATE_MENU) {
     LoadResources();
     
-    // Players configuration
-    player1.rect.setPosition(32 * 3, 32 * 3);
-    player1.sprite.setColor(sf::Color(0, 102, 51));
-    player1.forward = sf::Keyboard::W;
-    player1.backwards = sf::Keyboard::S;
-    player1.left = sf::Keyboard::A;
-    player1.right = sf::Keyboard::D;
-    player1.fire = sf::Keyboard::Space;
-
-    player2.rect.setPosition(GAME_WIDTH - 32 * 3, GAME_HEIGHT - 32 * 3);
-    player2.rect.setRotation(180);
-    player2.angle = 180;
-    player2.sprite.setColor(sf::Color(0, 102, 110));
-    player2.forward = sf::Keyboard::I;
-    player2.backwards = sf::Keyboard::K;
-    player2.left = sf::Keyboard::J;
-    player2.right = sf::Keyboard::L;
-    player2.fire = sf::Keyboard::Return;
-
+    ResetLevel();
     Start();
 }
 
@@ -33,11 +15,9 @@ void Game::Start() {
     sf::Keyboard::setVirtualKeyboardVisible(true);
     window.setFramerateLimit(60);
 
-    std::vector<Player>::const_iterator p_iter;
-    std::vector<Player> player_array;
     player_array.push_back(player1);
     player_array.push_back(player2);
-    
+
     // Main game loop
     while (window.isOpen()) {
         sf::Event event;
@@ -46,26 +26,26 @@ void Game::Start() {
                 window.close();
             }
 
-            if (game_state == GameStates::STATE_MENU && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-                
+            if (game_state == GameStates::STATE_MENU) {
+
                 // Esc while in menu closes the game
-                window.close();
-
-            } else if (game_state == GameStates::STATE_MENU && event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
-                
                 // Press space to select the level
-                game_state = GameStates::STATE_LEVEL_SELECT;
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                    window.close();
+                } else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
+                    game_state = GameStates::STATE_LEVEL_SELECT;
+                }
 
-            } else if (game_state == GameStates::STATE_PLAY && event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-                
+            } else if (game_state == GameStates::STATE_PLAY) {
+
                 // Press esc while playing to go back to the menu
-                game_state = GameStates::STATE_MENU;
-                while (!obstacle_array.empty()) {
-                    obstacle_array.pop_back();
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                    game_state = GameStates::STATE_MENU;
+                    ResetLevel();
                 }
 
             } else if (game_state == GameStates::STATE_LEVEL_SELECT) {
-                
+
                 // Press esc while selecting to go back to menu
                 if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
                     game_state = GameStates::STATE_MENU;
@@ -176,7 +156,7 @@ void Game::GameLoop(sf::RenderWindow& window) {
     // Player updates
     player1.Update(elapsed_time, obstacle_array);
     player2.Update(elapsed_time, obstacle_array);
-    
+
     // Missile creation (SPACE key) player1
     player1.Fire(projectile, projectile_array, Projectile::P1);
     // Missile creation (ENTER key) player2
@@ -225,6 +205,36 @@ void Game::LevelSelect(sf::RenderWindow& window) {
     window.draw(level3);
 
     window.display();
+}
+
+void Game::ResetLevel() {
+    // Clean map
+    while (!obstacle_array.empty()) {
+        obstacle_array.pop_back();
+    }
+
+    player1.hp = 30;
+    player1.sprite.setColor(sf::Color(0, 102, 51));
+    player1.sprite.setTextureRect(sf::IntRect(0, 0, 60, 40));
+    player1.rect.setPosition(32 * 3, 32 * 3);
+    player1.rect.setRotation(0);
+    player1.forward = sf::Keyboard::W;
+    player1.backwards = sf::Keyboard::S;
+    player1.left = sf::Keyboard::A;
+    player1.right = sf::Keyboard::D;
+    player1.fire = sf::Keyboard::Space;
+
+    player2.hp = 30;
+    player2.angle = 180;
+    player2.sprite.setColor(sf::Color(0, 102, 110));
+    player2.sprite.setTextureRect(sf::IntRect(0, 0, 60, 40));
+    player2.rect.setPosition(GAME_WIDTH - 32 * 3, GAME_HEIGHT - 32 * 3);
+    player2.rect.setRotation(180);
+    player2.forward = sf::Keyboard::I;
+    player2.backwards = sf::Keyboard::K;
+    player2.left = sf::Keyboard::J;
+    player2.right = sf::Keyboard::L;
+    player2.fire = sf::Keyboard::Return;
 }
 
 void Game::LoadResources() {
