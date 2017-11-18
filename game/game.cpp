@@ -50,20 +50,35 @@ void Game::Start() {
                 if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
                     game_state = GameStates::STATE_MENU;
                 } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num1) {
+                    
                     // Map selection
                     ResetLevel();
+                    player1.sprite.setColor(sf::Color(0, 102, 51)); // Set forest colors
+                    player2.sprite.setColor(sf::Color(29, 131, 70)); // Set forest colors
+                    background.setTexture(background_texture); // Set grass background
                     game_map = new Map(1, obstacle, obstacle_array);
                     game_state = GameStates::STATE_PLAY;
+
                 } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num2) {
+                    
                     // Map selection
                     ResetLevel();
+                    background.setTexture(snow_texture); // Set snow background
+                    player1.sprite.setColor(sf::Color(0, 127, 141)); // Set snow colors
+                    player2.sprite.setColor(sf::Color(0, 89, 111)); // Set snow colors
                     game_map = new Map(2, obstacle, obstacle_array);
                     game_state = GameStates::STATE_PLAY;
+
                 } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num3) {
+                    
                     // Map selection
                     ResetLevel();
+                    player1.sprite.setColor(sf::Color(0, 102, 51)); // Set forest colors
+                    player2.sprite.setColor(sf::Color(29, 131, 70)); // Set forest colors
+                    background.setTexture(background_texture); // Set grass background
                     game_map = new Map(3, obstacle, obstacle_array);
                     game_state = GameStates::STATE_PLAY;
+                    
                 }
 
             } else if (game_state == GameStates::STATE_EXIT) {
@@ -282,7 +297,6 @@ void Game::ResetLevel() {
 
     player2.hp = 30;
     player2.angle = 180;
-    player2.sprite.setColor(sf::Color(0, 102, 110));
     player2.sprite.setTextureRect(sf::IntRect(0, 0, 60, 40));
     player2.rect.setPosition(GAME_WIDTH - 32 * 3, GAME_HEIGHT - 32 * 3);
     player2.rect.setRotation(180);
@@ -302,6 +316,11 @@ void Game::LoadResources() {
     background_texture.setRepeated(true);
     background.setTexture(background_texture);
     background.setTextureRect(sf::IntRect(0, 0, GAME_WIDTH, GAME_HEIGHT));
+
+    if (!snow_texture.loadFromFile(SNOWBACKGROUND_PATH)) {
+        std::cout << "Snow background error" << "\n";
+    }
+    snow_texture.setRepeated(true);
 
     // Font loading
     if (!title_font.loadFromFile(TITLEFONT_PATH)) {
@@ -346,6 +365,7 @@ void Game::LoadResources() {
     title.setString("TANK2017");
     title.setCharacterSize(100);
     title.setStyle(sf::Text::Bold);
+    title.setOutlineThickness(1);
     title.setFillColor(sf::Color(100, 50, 150));
     title.setPosition(GAME_WIDTH/4, GAME_HEIGHT/2 - GAME_HEIGHT/4);
 
@@ -353,6 +373,7 @@ void Game::LoadResources() {
     subtitle.setFont(banksia_font);
     subtitle.setString("Barichello");
     subtitle.setCharacterSize(40);
+    subtitle.setOutlineThickness(1);
     subtitle.setFillColor(sf::Color(100, 50, 150));
     subtitle.setPosition(GAME_WIDTH/3 + GAME_WIDTH/10, GAME_HEIGHT/2 + GAME_HEIGHT/4);
 
@@ -360,6 +381,8 @@ void Game::LoadResources() {
     levelselect.setFont(level_font);
     levelselect.setString("- Select level -");
     levelselect.setCharacterSize(65);
+    levelselect.setOutlineColor(sf::Color::White);
+    levelselect.setOutlineThickness(1);
     levelselect.setFillColor(sf::Color(10, 100, 20));
     levelselect.setPosition(0, GAME_HEIGHT/2 - GAME_HEIGHT/3);
 
@@ -367,6 +390,8 @@ void Game::LoadResources() {
     level1.setFont(digital_font);
     level1.setString("Level 1 - Bridge");
     level1.setCharacterSize(40);
+    level1.setOutlineColor(sf::Color::White);
+    level1.setOutlineThickness(1);
     level1.setFillColor(sf::Color(10, 50, 100));
     auto previous_pos = levelselect.getPosition();
     level1.setPosition(previous_pos.x, previous_pos.y + levelselect.getLocalBounds().height + 100);
@@ -374,6 +399,8 @@ void Game::LoadResources() {
     level2.setFont(digital_font);
     level2.setString("Level 2 - Fountain");
     level2.setCharacterSize(40);
+    level2.setOutlineColor(sf::Color::White);
+    level2.setOutlineThickness(1);
     level2.setFillColor(sf::Color(10, 50, 100));
     previous_pos = level1.getPosition();
     level2.setPosition(previous_pos.x, previous_pos.y + levelselect.getLocalBounds().height);
@@ -381,6 +408,8 @@ void Game::LoadResources() {
     level3.setFont(digital_font);
     level3.setString("Level 3 - ?");
     level3.setCharacterSize(40);
+    level3.setOutlineColor(sf::Color::White);
+    level3.setOutlineThickness(1);
     level3.setFillColor(sf::Color(10, 50, 100));
     previous_pos = level2.getPosition();
     level3.setPosition(previous_pos.x, previous_pos.y + levelselect.getLocalBounds().height);

@@ -86,7 +86,7 @@ void Player::AutoMove(sf::Time elapsed_time) {
         rect.setPosition(-200, GenerateRandom(GAME_HEIGHT/2 + GAME_HEIGHT/4));
         rect.setRotation(GenerateRandom(4));
         player_speed = GenerateRandom(10) + 60;
-        auto new_color = sf::Color(GenerateRandom(10),50 + GenerateRandom(100),30 + GenerateRandom(50));
+        auto new_color = sf::Color(GenerateRandom(20), 40 + GenerateRandom(100), 40 + GenerateRandom(50));
         sprite.setColor(new_color);
     }
 }

@@ -50,6 +50,7 @@ public:
 
     sf::RenderWindow window;
     sf::Texture background_texture;
+    sf::Texture snow_texture;
     sf::Sprite background;
 
     sf::Font title_font;
