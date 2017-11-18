@@ -29,8 +29,8 @@ Map::Map(std::size_t level_number, Obstacle& obstacle, std::vector<Obstacle>& ob
 
 void Map::GenerateBorders(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
     obstacle.sprite.setTexture(border_texture);
-    obstacle.destroyable = false;
     obstacle.sprite.setColor(sf::Color(100, 100, 100));
+    obstacle.destroyable = false;
     // Generate vertical border walls
     for (auto i = 0u; i < GAME_HEIGHT; i+=32) {
         obstacle.rect.setPosition(0, i);
@@ -52,6 +52,7 @@ void Map::GenerateBorders(Obstacle& obstacle, std::vector<Obstacle>& obstacle_ar
 void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
     // ----- BRIDGE -----
     obstacle.tiletype = Obstacle::Type::Wall;
+    obstacle.sprite.setColor(sf::Color(200, 200, 200));
     obstacle.decoration = false;
     obstacle.destroyable = true;
 
@@ -100,7 +101,6 @@ void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
     obstacle.decoration = false;
     obstacle.destroyable = true;
     obstacle.sprite.setTexture(wall_texture);
-    obstacle.sprite.setColor(sf::Color(200, 200, 200));
 
     // Horizontal walls
     for (auto i = 32u * 2; i < GAME_WIDTH - 32 * 2; i+=32) {
@@ -127,7 +127,6 @@ void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
     obstacle.decoration = true;
     obstacle.destroyable = false;
     obstacle.sprite.setTexture(leaf_texture);
-    obstacle.sprite.setColor(sf::Color(240, 240, 240));
 
     // Vertical strips
     for (auto i = 32u; i < GAME_HEIGHT-32; i+=32) {

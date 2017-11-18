@@ -32,6 +32,10 @@ public:
 
     Player player1;
     Player player2;
+    Player democannon;
+    Player democannon1;
+    Player democannon2;
+    
     Obstacle obstacle;
     Projectile projectile;
 
@@ -51,8 +55,10 @@ public:
     sf::Font title_font;
     sf::Font digital_font;
     sf::Font level_font;
+    sf::Font banksia_font;
     sf::Text message;
     sf::Text title;
+    sf::Text subtitle;
     sf::Text levelselect;
     sf::Text level1;
     sf::Text level2;

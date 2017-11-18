@@ -67,6 +67,42 @@ void Player::Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array
     // std::cout << angle << "\n"; // DEBUG
 }
 
+// Movement for the title screen tanks
+void Player::AutoMove(sf::Time elapsed_time) {
+    sprite.setPosition(rect.getPosition());
+    sprite.setRotation(rect.getRotation());
+    
+    float move_amount = player_speed * elapsed_time.asSeconds();
+    float move_x = LinearVelocityX(angle) * move_amount;
+    float move_y = LinearVelocityY(angle) * move_amount;
+
+    rect.move(move_x, move_y);
+    rect.rotate(0.7f * elapsed_time.asSeconds());
+    angle = rect.getRotation();
+
+    // Cycle the tank back when it goes out of the screen
+    if (rect.getPosition().x > GAME_WIDTH + 200 || rect.getPosition().y > GAME_HEIGHT + 200) {
+        rect.setPosition(-200, GenerateRandom(GAME_HEIGHT/2 + GAME_HEIGHT/4));
+        rect.setRotation(0);
+        angle = 0;
+    }
+}
+
+void Player::AutoFire(std::vector<Projectile>& projectile_array) {
+    if (_player_clock.getElapsedTime().asSeconds() - last_shot.asSeconds() > shot_delay) {
+        Projectile projectile;
+        last_shot = _player_clock.getElapsedTime();
+        projectile.angle = angle;
+
+        projectile.rect.setRotation(projectile.angle);
+        float x = Entity::LinearVelocityX(projectile.angle);
+        float y = Entity::LinearVelocityY(projectile.angle);
+
+        projectile.rect.setPosition(sprite.getPosition());
+        projectile_array.push_back(projectile);
+    }
+}
+
 // Checks if the tank's sprite is getting out of the screen X axis
 float Player::CheckOutOfMapX(float move_x) {
     if (rect.getPosition().x + move_x <= rect.getGlobalBounds().width/2 || rect.getPosition().x + move_x + rect.getGlobalBounds().width/2 >= GAME_WIDTH) {

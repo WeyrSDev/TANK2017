@@ -8,6 +8,7 @@ static const int GAME_HEIGHT = 700;
 #define TITLEFONT_PATH      "media/fonts/game_font.ttf"
 #define DIGITALFONT_PATH    "media/fonts/digitalfont.ttf"
 #define LEVELFONT_PATH      "media/fonts/level_font.otf"
+#define BANKSIA_PATH        "media/fonts/banksia.ttf"
 
 #define PLAYER_PATH         "media/img/tank.png"
 

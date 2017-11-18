@@ -9,6 +9,8 @@ class Player : public Entity {
 public:
     Player();
     void Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array);
+    void AutoMove(sf::Time elapsed_time);
+    void AutoFire(std::vector<Projectile>& projectile_array);
     void Hit(std::size_t counter, std::vector<Projectile>& projectile_array);
     void Fire(Projectile& projectile, std::vector<Projectile>& projectile_array, enum Projectile::Owner owner);
     float CheckOutOfMapX(float move_x);

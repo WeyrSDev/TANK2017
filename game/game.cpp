@@ -190,7 +190,30 @@ void Game::GameLoop(sf::RenderWindow& window) {
 
 void Game::TitleScreen(sf::RenderWindow& window) {
     window.clear();
+
+    sf::Time elapsed_time = frame_clock.restart();
+    democannon.AutoMove(elapsed_time);
+    democannon1.AutoMove(elapsed_time);
+    democannon2.AutoMove(elapsed_time);
+
+    democannon.AutoFire(projectile_array);
+    democannon1.AutoFire(projectile_array);
+    democannon2.AutoFire(projectile_array);
+
+    // Missile drawing
+    std::size_t counter = 0;
+    for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
+        projectile_array[counter].Update(elapsed_time);
+        window.draw(projectile_array[counter].sprite);
+        ++counter;
+    }
+
+    window.draw(democannon.sprite);
+    window.draw(democannon1.sprite);
+    window.draw(democannon2.sprite);
+
     window.draw(title);
+    window.draw(subtitle);
     window.display();
 }
 
@@ -213,7 +236,14 @@ void Game::ResetLevel() {
         obstacle_array.pop_back();
     }
 
+    while (!projectile_array.empty()) {
+        projectile_array.pop_back();
+    }
+
+    message.setString("");
+
     player1.hp = 30;
+    player1.angle = 0;
     player1.sprite.setColor(sf::Color(0, 102, 51));
     player1.sprite.setTextureRect(sf::IntRect(0, 0, 60, 40));
     player1.rect.setPosition(32 * 3, 32 * 3);
@@ -237,6 +267,7 @@ void Game::ResetLevel() {
     player2.fire = sf::Keyboard::Return;
 }
 
+// Load and setup initial resources
 void Game::LoadResources() {
     // Texture loading
     if (!background_texture.loadFromFile(BACKGROUND_PATH)) {
@@ -256,6 +287,25 @@ void Game::LoadResources() {
     if (!level_font.loadFromFile(LEVELFONT_PATH)) {
         std::cout << "Error loading levelfont" << "\n";
     }
+    if (!banksia_font.loadFromFile(BANKSIA_PATH)) {
+        std::cout << "Banksia!" << "\n";
+    }
+
+    // Setup democannon (Title screen cannons)
+    democannon.sprite.setColor(sf::Color(0, 102, 51));
+    democannon.rect.setPosition(GAME_WIDTH/6, GAME_HEIGHT/2 + GAME_HEIGHT/4);
+    democannon.sprite.setScale(1.5f, 1.5f);
+    democannon.shot_delay = 4.7f;
+
+    democannon1.sprite.setColor(sf::Color(0, 90, 3));
+    democannon1.rect.setPosition(GAME_WIDTH/8, GAME_HEIGHT/2 - GAME_HEIGHT/4);
+    democannon1.sprite.setScale(1.5f, 1.5f);
+    democannon1.shot_delay = 5.0f;
+
+    democannon2.sprite.setColor(sf::Color(104, 94, 20));
+    democannon2.rect.setPosition(GAME_WIDTH/2, GAME_HEIGHT/2);
+    democannon2.sprite.setScale(1.5f, 1.5f);
+    democannon2.shot_delay = 4.1f;
 
     // Popup message
     message.setFont(digital_font);
@@ -273,6 +323,13 @@ void Game::LoadResources() {
     title.setFillColor(sf::Color(100, 50, 150));
     title.setPosition(GAME_WIDTH/4, GAME_HEIGHT/2 - GAME_HEIGHT/4);
 
+    // Subtitle
+    subtitle.setFont(banksia_font);
+    subtitle.setString("Barichello");
+    subtitle.setCharacterSize(40);
+    subtitle.setFillColor(sf::Color(100, 50, 150));
+    subtitle.setPosition(GAME_WIDTH/3 + GAME_WIDTH/10, GAME_HEIGHT/2 + GAME_HEIGHT/4);
+
     // Level select message
     levelselect.setFont(level_font);
     levelselect.setString("- Select level -");
@@ -280,6 +337,7 @@ void Game::LoadResources() {
     levelselect.setFillColor(sf::Color(10, 100, 20));
     levelselect.setPosition(0, GAME_HEIGHT/2 - GAME_HEIGHT/3);
 
+    // Levels Strings:
     level1.setFont(digital_font);
     level1.setString("Level 1 - Bridge");
     level1.setCharacterSize(40);
