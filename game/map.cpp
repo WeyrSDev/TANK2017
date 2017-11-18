@@ -52,7 +52,7 @@ void Map::GenerateBorders(Obstacle& obstacle, std::vector<Obstacle>& obstacle_ar
 void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
     // ----- BRIDGE -----
     obstacle.tiletype = Obstacle::Type::Wall;
-    obstacle.sprite.setColor(sf::Color(200, 200, 200));
+    obstacle.sprite.setColor(sf::Color(150, 150, 150)); // Darker color for the rest of the blocks
     obstacle.decoration = false;
     obstacle.destroyable = true;
 
@@ -188,7 +188,6 @@ void Map::LoadLevel3(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
     obstacle.decoration = false;
     obstacle.destroyable = true;
     obstacle.sprite.setTexture(wall_texture);
-    obstacle.sprite.setColor(sf::Color(200, 200, 200));
 
     for (auto i = 32u; i < GAME_WIDTH-32; i+=32) {
         obstacle.rect.setPosition(i, GenerateRandom(GAME_HEIGHT-32*2));

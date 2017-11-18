@@ -51,14 +51,17 @@ void Game::Start() {
                     game_state = GameStates::STATE_MENU;
                 } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num1) {
                     // Map selection
+                    ResetLevel();
                     game_map = new Map(1, obstacle, obstacle_array);
                     game_state = GameStates::STATE_PLAY;
                 } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num2) {
                     // Map selection
+                    ResetLevel();
                     game_map = new Map(2, obstacle, obstacle_array);
                     game_state = GameStates::STATE_PLAY;
                 } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num3) {
                     // Map selection
+                    ResetLevel();
                     game_map = new Map(3, obstacle, obstacle_array);
                     game_state = GameStates::STATE_PLAY;
                 }
@@ -191,6 +194,7 @@ void Game::GameLoop(sf::RenderWindow& window) {
 void Game::TitleScreen(sf::RenderWindow& window) {
     window.clear();
 
+    // Democannons movement
     sf::Time elapsed_time = frame_clock.restart();
     democannon.AutoMove(elapsed_time);
     democannon1.AutoMove(elapsed_time);
@@ -220,8 +224,29 @@ void Game::TitleScreen(sf::RenderWindow& window) {
 void Game::LevelSelect(sf::RenderWindow& window) {
     window.clear();
 
-    // Map select
+    // Democannons movement
+    sf::Time elapsed_time = frame_clock.restart();
+    democannon.AutoMove(elapsed_time);
+    democannon1.AutoMove(elapsed_time);
+    democannon2.AutoMove(elapsed_time);
 
+    democannon.AutoFire(projectile_array);
+    democannon1.AutoFire(projectile_array);
+    democannon2.AutoFire(projectile_array);
+
+    // Missile drawing
+    std::size_t counter = 0;
+    for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
+        projectile_array[counter].Update(elapsed_time);
+        window.draw(projectile_array[counter].sprite);
+        ++counter;
+    }
+
+    window.draw(democannon.sprite);
+    window.draw(democannon1.sprite);
+    window.draw(democannon2.sprite);
+
+    // Map select
     window.draw(levelselect);
     window.draw(level1);
     window.draw(level2);
@@ -230,6 +255,7 @@ void Game::LevelSelect(sf::RenderWindow& window) {
     window.display();
 }
 
+// Clean the drawing arrays and reset players
 void Game::ResetLevel() {
     // Clean map
     while (!obstacle_array.empty()) {

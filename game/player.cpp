@@ -28,6 +28,7 @@ void Player::Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array
         move_x = CheckOutOfMapX(move_x);
         move_y = CheckOutOfMapY(move_y);
 
+        // Obstacles collision
         std::vector<Obstacle>::const_iterator e_iter;
         std::size_t counter = 0;
         for (e_iter = obstacle_array.begin(); e_iter != obstacle_array.end(); e_iter++) {
@@ -83,11 +84,14 @@ void Player::AutoMove(sf::Time elapsed_time) {
     // Cycle the tank back when it goes out of the screen
     if (rect.getPosition().x > GAME_WIDTH + 200 || rect.getPosition().y > GAME_HEIGHT + 200) {
         rect.setPosition(-200, GenerateRandom(GAME_HEIGHT/2 + GAME_HEIGHT/4));
-        rect.setRotation(0);
-        angle = 0;
+        rect.setRotation(GenerateRandom(4));
+        player_speed = GenerateRandom(10) + 60;
+        auto new_color = sf::Color(GenerateRandom(10),50 + GenerateRandom(100),30 + GenerateRandom(50));
+        sprite.setColor(new_color);
     }
 }
 
+// AutoFire for the democannons
 void Player::AutoFire(std::vector<Projectile>& projectile_array) {
     if (_player_clock.getElapsedTime().asSeconds() - last_shot.asSeconds() > shot_delay) {
         Projectile projectile;
