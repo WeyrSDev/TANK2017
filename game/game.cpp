@@ -78,7 +78,7 @@ void Game::Start() {
                     background.setTexture(background_texture); // Set grass background
                     game_map = new Map(3, obstacle, obstacle_array);
                     game_state = GameStates::STATE_PLAY;
-                    
+
                 }
 
             } else if (game_state == GameStates::STATE_EXIT) {
@@ -281,8 +281,13 @@ void Game::ResetLevel() {
         projectile_array.pop_back();
     }
 
+    while (!player_array.empty()) {
+        player_array.pop_back();
+    }
+
     message.setString("");
 
+    player1.alive = true;
     player1.hp = 30;
     player1.angle = 0;
     player1.sprite.setColor(sf::Color(0, 102, 51));
@@ -295,6 +300,7 @@ void Game::ResetLevel() {
     player1.right = sf::Keyboard::D;
     player1.fire = sf::Keyboard::Space;
 
+    player2.alive = true;
     player2.hp = 30;
     player2.angle = 180;
     player2.sprite.setTextureRect(sf::IntRect(0, 0, 60, 40));

@@ -76,6 +76,7 @@ void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
     obstacle.decoration = false;
     obstacle.destroyable = false;
     obstacle.sprite.setTexture(water_texture);
+
     // Upper river
     for (auto i = 32u; i < GAME_HEIGHT/2 - 32 * 2; i+=32) {
         obstacle.rect.setPosition(GAME_WIDTH/2-32, i);
@@ -179,8 +180,75 @@ void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
 // >---------- FOUNTAIN LEVEL ----------<
 // TODO
 void Map::LoadLevel2(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
-    obstacle.rect.setPosition(100, 100);
-    obstacle_array.push_back(obstacle);
+    // ----- FOUNTAIN -----
+    // ----- BRICKS -----
+    obstacle.tiletype = Obstacle::Type::Wall;
+    obstacle.decoration = false;
+    obstacle.destroyable = true;
+    obstacle.sprite.setTexture(border_texture);
+    obstacle.sprite.setColor(sf::Color(200, 200, 200));
+    
+    // Generate middle bricks
+    for (auto i = GAME_WIDTH/2 - 32 * 3; i < GAME_WIDTH/2 + 32 * 3; i+=32) {
+        for (auto j = GAME_HEIGHT/2 - 32 * 3; j < GAME_HEIGHT/2 + 32 * 3; j+=32) {
+            obstacle.rect.setPosition(i, j);
+            obstacle_array.push_back(obstacle);
+        }
+    }
+
+    // ----- WATER -----
+    obstacle.tiletype = Obstacle::Type::Water;
+    obstacle.decoration = false;
+    obstacle.destroyable = false;
+    obstacle.sprite.setTexture(water_texture);
+
+    // FIll fountain with water
+    for (auto i = GAME_WIDTH/2 - 32 * 2; i < GAME_WIDTH/2 + 32 * 2; i+=32) {
+        for (auto j = GAME_HEIGHT/2 - 32 * 2; j < GAME_HEIGHT/2 + 32 * 2; j+=32) {
+            obstacle.rect.setPosition(i, j);
+            obstacle_array.push_back(obstacle);
+        }
+    }
+
+    // ----- FOLLIAGE -----
+    obstacle.tiletype = Obstacle::Type::Foliage;
+    obstacle.decoration = true;
+    obstacle.destroyable = false;
+    obstacle.sprite.setTexture(leaf_texture);
+    obstacle.sprite.setColor(sf::Color(12, 193, 187)); // Ice Green color
+
+    // Upper bush
+    for (auto i = GAME_HEIGHT/2 - 32 * 4; i > 0; i-=32) {
+        obstacle.rect.setPosition(GAME_WIDTH/2 - 32, i);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2, i);
+        obstacle_array.push_back(obstacle);
+    }
+
+    // Lower bush
+    for (auto i = GAME_HEIGHT/2 + 32 * 3; i < GAME_HEIGHT; i+=32) {
+        obstacle.rect.setPosition(GAME_WIDTH/2 - 32, i);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2, i);
+        obstacle_array.push_back(obstacle);
+    }
+
+    // Left bush
+    for (auto i = GAME_WIDTH/2 - 32 * 4; i > 0; i-=32) {
+        obstacle.rect.setPosition(i, GAME_HEIGHT/2 - 32);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(i, GAME_HEIGHT/2);
+        obstacle_array.push_back(obstacle);
+    }
+
+    // Right bush
+    for (auto i = GAME_WIDTH/2 + 32 * 3; i < GAME_WIDTH; i+=32) {
+        obstacle.rect.setPosition(i, GAME_HEIGHT/2 - 32);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(i, GAME_HEIGHT/2);
+        obstacle_array.push_back(obstacle);
+    }
+
     GenerateBorders(obstacle, obstacle_array);
 }
 
