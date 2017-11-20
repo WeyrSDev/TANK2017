@@ -10,8 +10,8 @@ TANK2017 is a 2 player retro tank shooter currently in development, made with SF
 To play the game you need to compile it first:
 ### Linux
 1. Install the SFML library using your package manager.
-2. `cd ./game/` and `make`
-Visit the [SFML Website](https://www.sfml-dev.org/download.php) for more info on downloading and installing it.
+2. `cd ./game/` and `make`  
+Visit the [SFML Website](https://www.sfml-dev.org/download.php) for more info on downloading and installing it for other plataforms.
 
 # Controls
 
