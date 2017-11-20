@@ -178,7 +178,6 @@ void Map::LoadLevel1(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
 }
 
 // >---------- FOUNTAIN LEVEL ----------<
-// TODO
 void Map::LoadLevel2(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) {
     // ----- FOUNTAIN -----
     // ----- BRICKS -----
@@ -208,6 +207,28 @@ void Map::LoadLevel2(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
             obstacle.rect.setPosition(i, j);
             obstacle_array.push_back(obstacle);
         }
+    }
+
+    // ----- BRICKS -----
+    obstacle.tiletype = Obstacle::Type::Wall;
+    obstacle.decoration = false;
+    obstacle.destroyable = true;
+    obstacle.sprite.setTexture(wall_texture);
+    obstacle.sprite.setColor(sf::Color(100, 100, 100));
+
+    for (auto i = 32u * 4; i < GAME_HEIGHT-32*4; i+=64) {
+        obstacle.rect.setPosition(GAME_WIDTH/2 - GAME_WIDTH/4, i);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2 + GAME_WIDTH/4, i);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2 - GAME_WIDTH/4-32, i-32);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2 + GAME_WIDTH/4+32, i-32);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2 - GAME_WIDTH/4-32*2, i+32*2);
+        obstacle_array.push_back(obstacle);
+        obstacle.rect.setPosition(GAME_WIDTH/2 + GAME_WIDTH/4+32*2, i+32*2);
+        obstacle_array.push_back(obstacle);
     }
 
     // ----- FOLLIAGE -----
