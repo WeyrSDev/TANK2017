@@ -18,6 +18,9 @@ public:
     void LevelSelect(sf::RenderWindow& window);
     
     void LoadResources();
+    void LoadDemoCannons();
+
+    void DeleteDemoCannons();
     void ResetLevel();
 
     enum GameStates {
@@ -32,9 +35,9 @@ public:
 
     Player* player1;
     Player* player2;
-    Player democannon;
-    Player democannon1;
-    Player democannon2;
+    Player* democannon;
+    Player* democannon1;
+    Player* democannon2;
     
     Obstacle obstacle;
     Projectile projectile;

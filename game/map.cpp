@@ -216,7 +216,7 @@ void Map::LoadLevel2(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
     obstacle.sprite.setTexture(wall_texture);
     obstacle.sprite.setColor(sf::Color(100, 100, 100));
 
-    for (auto i = 32u * 4; i < GAME_HEIGHT-32*4; i+=64) {
+    for (auto i = 32u * 3; i < GAME_HEIGHT-32*2; i+=64) {
         obstacle.rect.setPosition(GAME_WIDTH/2 - GAME_WIDTH/4, i);
         obstacle_array.push_back(obstacle);
         obstacle.rect.setPosition(GAME_WIDTH/2 + GAME_WIDTH/4, i);
@@ -225,9 +225,9 @@ void Map::LoadLevel2(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
         obstacle_array.push_back(obstacle);
         obstacle.rect.setPosition(GAME_WIDTH/2 + GAME_WIDTH/4+32, i-32);
         obstacle_array.push_back(obstacle);
-        obstacle.rect.setPosition(GAME_WIDTH/2 - GAME_WIDTH/4-32*2, i+32*2);
+        obstacle.rect.setPosition(GAME_WIDTH/2 - GAME_WIDTH/4-32*2, i);
         obstacle_array.push_back(obstacle);
-        obstacle.rect.setPosition(GAME_WIDTH/2 + GAME_WIDTH/4+32*2, i+32*2);
+        obstacle.rect.setPosition(GAME_WIDTH/2 + GAME_WIDTH/4+32*2, i);
         obstacle_array.push_back(obstacle);
     }
 

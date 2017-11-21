@@ -5,7 +5,7 @@ Game::Game():
     window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "TANK2017"),
     game_state(GameStates::STATE_MENU) {
     LoadResources();
-    
+    LoadDemoCannons();
     ResetLevel();
     Start();
 }
@@ -36,33 +36,27 @@ void Game::Start() {
                     game_state = GameStates::STATE_LEVEL_SELECT;
                 }
 
-            } else if (game_state == GameStates::STATE_PLAY) {
-
-                // Press esc while playing to go back to the menu
-                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-                    game_state = GameStates::STATE_MENU;
-                    ResetLevel();
-                }
-
             } else if (game_state == GameStates::STATE_LEVEL_SELECT) {
 
                 // Press esc while selecting to go back to menu
                 if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
                     game_state = GameStates::STATE_MENU;
                 } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num1) {
-                    
+
                     // Map selection
                     ResetLevel();
-                    player1->sprite.setColor(sf::Color(30, 142, 81)); // Set forest colors
+                    DeleteDemoCannons();
+                    player1->sprite.setColor(sf::Color(0, 102, 21)); // Set forest colors
                     player2->sprite.setColor(sf::Color(29, 131, 70)); // Set forest colors
                     background.setTexture(background_texture); // Set grass background
                     game_map = new Map(1, obstacle, obstacle_array);
                     game_state = GameStates::STATE_PLAY;
 
                 } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num2) {
-                    
+
                     // Map selection
                     ResetLevel();
+                    DeleteDemoCannons();
                     background.setTexture(snow_texture); // Set snow background
                     player1->sprite.setColor(sf::Color(0, 167, 181)); // Set snow colors
                     player2->sprite.setColor(sf::Color(0, 89, 111)); // Set snow colors
@@ -70,15 +64,25 @@ void Game::Start() {
                     game_state = GameStates::STATE_PLAY;
 
                 } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Num3) {
-                    
+
                     // Map selection
                     ResetLevel();
+                    DeleteDemoCannons();
                     player1->sprite.setColor(sf::Color(0, 102, 51)); // Set forest colors
                     player2->sprite.setColor(sf::Color(29, 131, 70)); // Set forest colors
                     background.setTexture(background_texture); // Set grass background
                     game_map = new Map(3, obstacle, obstacle_array);
                     game_state = GameStates::STATE_PLAY;
 
+                }
+
+            } else if (game_state == GameStates::STATE_PLAY) {
+
+                // Press esc while playing to go back to the menu
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                    game_state = GameStates::STATE_MENU;
+                    ResetLevel();
+                    LoadDemoCannons();
                 }
 
             } else if (game_state == GameStates::STATE_EXIT) {
@@ -211,13 +215,13 @@ void Game::TitleScreen(sf::RenderWindow& window) {
 
     // Democannons movement
     sf::Time elapsed_time = frame_clock.restart();
-    democannon.AutoMove(elapsed_time);
-    democannon1.AutoMove(elapsed_time);
-    democannon2.AutoMove(elapsed_time);
+    democannon->AutoMove(elapsed_time);
+    democannon1->AutoMove(elapsed_time);
+    democannon2->AutoMove(elapsed_time);
 
-    democannon.AutoFire(projectile_array);
-    democannon1.AutoFire(projectile_array);
-    democannon2.AutoFire(projectile_array);
+    democannon->AutoFire(projectile_array);
+    democannon1->AutoFire(projectile_array);
+    democannon2->AutoFire(projectile_array);
 
     // Missile drawing
     std::size_t counter = 0;
@@ -227,9 +231,9 @@ void Game::TitleScreen(sf::RenderWindow& window) {
         ++counter;
     }
 
-    window.draw(democannon.sprite);
-    window.draw(democannon1.sprite);
-    window.draw(democannon2.sprite);
+    window.draw(democannon->sprite);
+    window.draw(democannon1->sprite);
+    window.draw(democannon2->sprite);
 
     window.draw(title);
     window.draw(subtitle);
@@ -241,13 +245,13 @@ void Game::LevelSelect(sf::RenderWindow& window) {
 
     // Democannons movement
     sf::Time elapsed_time = frame_clock.restart();
-    democannon.AutoMove(elapsed_time);
-    democannon1.AutoMove(elapsed_time);
-    democannon2.AutoMove(elapsed_time);
+    democannon->AutoMove(elapsed_time);
+    democannon1->AutoMove(elapsed_time);
+    democannon2->AutoMove(elapsed_time);
 
-    democannon.AutoFire(projectile_array);
-    democannon1.AutoFire(projectile_array);
-    democannon2.AutoFire(projectile_array);
+    democannon->AutoFire(projectile_array);
+    democannon1->AutoFire(projectile_array);
+    democannon2->AutoFire(projectile_array);
 
     // Missile drawing
     std::size_t counter = 0;
@@ -257,9 +261,9 @@ void Game::LevelSelect(sf::RenderWindow& window) {
         ++counter;
     }
 
-    window.draw(democannon.sprite);
-    window.draw(democannon1.sprite);
-    window.draw(democannon2.sprite);
+    window.draw(democannon->sprite);
+    window.draw(democannon1->sprite);
+    window.draw(democannon2->sprite);
 
     // Map select
     window.draw(levelselect);
@@ -339,22 +343,6 @@ void Game::LoadResources() {
         std::cout << "Banksia!" << "\n";
     }
 
-    // Setup democannon (Title screen cannons)
-    democannon.sprite.setColor(sf::Color(0, 102, 51));
-    democannon.rect.setPosition(GAME_WIDTH/6, GAME_HEIGHT/2 + GAME_HEIGHT/4);
-    democannon.sprite.setScale(1.5f, 1.5f);
-    democannon.shot_delay = 4.7f;
-
-    democannon1.sprite.setColor(sf::Color(0, 90, 3));
-    democannon1.rect.setPosition(GAME_WIDTH/8, GAME_HEIGHT/2 - GAME_HEIGHT/4);
-    democannon1.sprite.setScale(1.5f, 1.5f);
-    democannon1.shot_delay = 5.0f;
-
-    democannon2.sprite.setColor(sf::Color(104, 94, 20));
-    democannon2.rect.setPosition(GAME_WIDTH/2, GAME_HEIGHT/2);
-    democannon2.sprite.setScale(1.5f, 1.5f);
-    democannon2.shot_delay = 4.1f;
-
     // Popup message
     message.setFont(digital_font);
     message.setCharacterSize(100);
@@ -375,10 +363,10 @@ void Game::LoadResources() {
     // Subtitle
     subtitle.setFont(banksia_font);
     subtitle.setString("Barichello");
-    subtitle.setCharacterSize(40);
+    subtitle.setCharacterSize(30);
     subtitle.setOutlineThickness(1);
     subtitle.setFillColor(sf::Color(100, 50, 150));
-    subtitle.setPosition(GAME_WIDTH/3 + GAME_WIDTH/10, GAME_HEIGHT/2 + GAME_HEIGHT/4);
+    subtitle.setPosition(GAME_WIDTH/3 + GAME_WIDTH/10, GAME_HEIGHT - GAME_HEIGHT/5);
 
     // Level select message
     levelselect.setFont(level_font);
@@ -409,11 +397,39 @@ void Game::LoadResources() {
     level2.setPosition(previous_pos.x, previous_pos.y + levelselect.getLocalBounds().height);
 
     level3.setFont(digital_font);
-    level3.setString("Level 3 - ?");
+    level3.setString("Level 3 - Random Obstacles");
     level3.setCharacterSize(40);
     level3.setOutlineColor(sf::Color::White);
     level3.setOutlineThickness(1);
     level3.setFillColor(sf::Color(10, 50, 100));
     previous_pos = level2.getPosition();
     level3.setPosition(previous_pos.x, previous_pos.y + levelselect.getLocalBounds().height);
+}
+
+void Game::LoadDemoCannons() {
+    // Setup democannon (Title screen cannons)
+    democannon = new Player();
+    democannon1 = new Player();
+    democannon2 = new Player();
+
+    democannon->sprite.setColor(sf::Color(0, 102, 51));
+    democannon->rect.setPosition(GAME_WIDTH/6, GAME_HEIGHT/2 + GAME_HEIGHT/4);
+    democannon->sprite.setScale(1.5f, 1.5f);
+    democannon->shot_delay = 4.7f;
+
+    democannon1->sprite.setColor(sf::Color(0, 90, 3));
+    democannon1->rect.setPosition(GAME_WIDTH/8, GAME_HEIGHT/2 - GAME_HEIGHT/4);
+    democannon1->sprite.setScale(1.5f, 1.5f);
+    democannon1->shot_delay = 5.0f;
+
+    democannon2->sprite.setColor(sf::Color(104, 94, 20));
+    democannon2->rect.setPosition(GAME_WIDTH/2, GAME_HEIGHT/2);
+    democannon2->sprite.setScale(1.5f, 1.5f);
+    democannon2->shot_delay = 2.1f;
+}
+
+void Game::DeleteDemoCannons() {
+    delete democannon;
+    delete democannon1;
+    delete democannon2;
 }
