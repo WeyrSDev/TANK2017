@@ -30,8 +30,8 @@ public:
 
     GameStates game_state = GameStates::STATE_MENU;
 
-    Player player1;
-    Player player2;
+    Player* player1;
+    Player* player2;
     Player democannon;
     Player democannon1;
     Player democannon2;
@@ -45,8 +45,8 @@ public:
     std::vector<Projectile>::const_iterator iter;
     std::vector<Projectile> projectile_array;
 
-    std::vector<Player>::const_iterator p_iter;
-    std::vector<Player> player_array;
+    std::vector<Player*>::const_iterator p_iter;
+    std::vector<Player*> player_array;
 
     sf::RenderWindow window;
     sf::Texture background_texture;

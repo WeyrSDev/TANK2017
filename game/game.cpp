@@ -53,8 +53,8 @@ void Game::Start() {
                     
                     // Map selection
                     ResetLevel();
-                    player1.sprite.setColor(sf::Color(0, 102, 51)); // Set forest colors
-                    player2.sprite.setColor(sf::Color(29, 131, 70)); // Set forest colors
+                    player1->sprite.setColor(sf::Color(30, 142, 81)); // Set forest colors
+                    player2->sprite.setColor(sf::Color(29, 131, 70)); // Set forest colors
                     background.setTexture(background_texture); // Set grass background
                     game_map = new Map(1, obstacle, obstacle_array);
                     game_state = GameStates::STATE_PLAY;
@@ -64,8 +64,8 @@ void Game::Start() {
                     // Map selection
                     ResetLevel();
                     background.setTexture(snow_texture); // Set snow background
-                    player1.sprite.setColor(sf::Color(0, 127, 141)); // Set snow colors
-                    player2.sprite.setColor(sf::Color(0, 89, 111)); // Set snow colors
+                    player1->sprite.setColor(sf::Color(0, 167, 181)); // Set snow colors
+                    player2->sprite.setColor(sf::Color(0, 89, 111)); // Set snow colors
                     game_map = new Map(2, obstacle, obstacle_array);
                     game_state = GameStates::STATE_PLAY;
 
@@ -73,8 +73,8 @@ void Game::Start() {
                     
                     // Map selection
                     ResetLevel();
-                    player1.sprite.setColor(sf::Color(0, 102, 51)); // Set forest colors
-                    player2.sprite.setColor(sf::Color(29, 131, 70)); // Set forest colors
+                    player1->sprite.setColor(sf::Color(0, 102, 51)); // Set forest colors
+                    player2->sprite.setColor(sf::Color(29, 131, 70)); // Set forest colors
                     background.setTexture(background_texture); // Set grass background
                     game_map = new Map(3, obstacle, obstacle_array);
                     game_state = GameStates::STATE_PLAY;
@@ -112,21 +112,21 @@ void Game::GameLoop(sf::RenderWindow& window) {
     std::size_t counter = 0;
     for (iter = projectile_array.begin(); iter != projectile_array.end(); iter++) {
         // Projectile-P1 collision
-        if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player1.sprite) && projectile_array[counter].Owner != Projectile::P1) {
-            player1.Hit(counter, projectile_array);
-            if (player1.hp <= 0) {
+        if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player1->sprite) && projectile_array[counter].Owner != Projectile::P1) {
+            player1->Hit(counter, projectile_array);
+            if (player1->hp <= 0) {
                 projectile_array[counter].alive = false;
-                player1.alive = false; // rip
+                player1->alive = false; // rip
                 message.setString("P2 won!");
             }
             projectile_array.erase(iter);
             break;
         // Projectile-P2 collision
-        } else if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player2.sprite) && projectile_array[counter].Owner != Projectile::P2) {
-            player2.Hit(counter, projectile_array);
-            if (player2.hp <= 0) {
+        } else if (Collision::PixelPerfectTest(projectile_array[counter].sprite, player2->sprite) && projectile_array[counter].Owner != Projectile::P2) {
+            player2->Hit(counter, projectile_array);
+            if (player2->hp <= 0) {
                 projectile_array[counter].alive = false;
-                player2.alive = false; // rip
+                player2->alive = false; // rip
                 message.setString("P1 won!");
             }
             projectile_array.erase(iter);
@@ -172,13 +172,13 @@ void Game::GameLoop(sf::RenderWindow& window) {
     }
 
     // Player updates
-    player1.Update(elapsed_time, obstacle_array);
-    player2.Update(elapsed_time, obstacle_array);
+    player1->Update(elapsed_time, obstacle_array);
+    player2->Update(elapsed_time, obstacle_array);
 
     // Missile creation (SPACE key) player1
-    player1.Fire(projectile, projectile_array, Projectile::P1);
+    player1->Fire(projectile, projectile_array, Projectile::P1);
     // Missile creation (ENTER key) player2
-    player2.Fire(projectile, projectile_array, Projectile::P2);
+    player2->Fire(projectile, projectile_array, Projectile::P2);
 
     // Missile drawing
     counter = 0;
@@ -190,8 +190,8 @@ void Game::GameLoop(sf::RenderWindow& window) {
     }
 
     // Player drawing
-    window.draw(player1.sprite);
-    window.draw(player2.sprite);
+    window.draw(player1->sprite);
+    window.draw(player2->sprite);
 
     // Obstacle drawing
     counter = 0;
@@ -287,30 +287,27 @@ void Game::ResetLevel() {
 
     message.setString("");
 
-    player1.alive = true;
-    player1.hp = 30;
-    player1.angle = 0;
-    player1.sprite.setColor(sf::Color(0, 102, 51));
-    player1.sprite.setTextureRect(sf::IntRect(0, 0, 60, 40));
-    player1.rect.setPosition(32 * 3, 32 * 3);
-    player1.rect.setRotation(0);
-    player1.forward = sf::Keyboard::W;
-    player1.backwards = sf::Keyboard::S;
-    player1.left = sf::Keyboard::A;
-    player1.right = sf::Keyboard::D;
-    player1.fire = sf::Keyboard::Space;
 
-    player2.alive = true;
-    player2.hp = 30;
-    player2.angle = 180;
-    player2.sprite.setTextureRect(sf::IntRect(0, 0, 60, 40));
-    player2.rect.setPosition(GAME_WIDTH - 32 * 3, GAME_HEIGHT - 32 * 3);
-    player2.rect.setRotation(180);
-    player2.forward = sf::Keyboard::I;
-    player2.backwards = sf::Keyboard::K;
-    player2.left = sf::Keyboard::J;
-    player2.right = sf::Keyboard::L;
-    player2.fire = sf::Keyboard::Return;
+    delete player1;
+    delete player2;
+
+    player1 = new Player();
+    player2 = new Player();
+    player1->forward = sf::Keyboard::W;
+    player1->backwards = sf::Keyboard::S;
+    player1->left = sf::Keyboard::A;
+    player1->right = sf::Keyboard::D;
+    player1->fire = sf::Keyboard::Space;
+    player1->rect.setPosition(32 * 3, 32 * 3);
+
+    player2->forward = sf::Keyboard::I;
+    player2->backwards = sf::Keyboard::K;
+    player2->left = sf::Keyboard::J;
+    player2->right = sf::Keyboard::L;
+    player2->fire = sf::Keyboard::Return;
+    player2->rect.setPosition(GAME_WIDTH - 32 * 3, GAME_HEIGHT - 32 * 3);
+    player2->rect.setRotation(180);
+    player2->angle = 180;
 }
 
 // Load and setup initial resources
