@@ -71,7 +71,7 @@ void Player::Update(sf::Time elapsed_time, std::vector<Obstacle>& obstacle_array
 // Movement for the title screen tanks
 void Player::AutoMove(sf::Time elapsed_time) {
     sprite.setPosition(rect.getPosition());
-    sprite.setRotation(rect.getRotation());
+    sprite.setRotation(angle);
     
     float move_amount = player_speed * elapsed_time.asSeconds();
     float move_x = LinearVelocityX(angle) * move_amount;

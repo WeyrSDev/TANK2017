@@ -281,7 +281,7 @@ void Map::LoadLevel3(Obstacle& obstacle, std::vector<Obstacle>& obstacle_array) 
     obstacle.sprite.setTexture(wall_texture);
     obstacle.sprite.setColor(sf::Color(150, 150, 150));
 
-    for (auto i = 32u; i < GAME_WIDTH-32; i+=32) {
+    for (auto i = 32*4u; i < GAME_WIDTH-32*5; i+=32) {
         obstacle.rect.setPosition(i, GenerateRandom(GAME_HEIGHT-32*2));
         obstacle_array.push_back(obstacle);
         obstacle.rect.setPosition(i, GenerateRandom(GAME_HEIGHT-32*2));

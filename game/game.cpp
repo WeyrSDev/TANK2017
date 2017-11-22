@@ -180,8 +180,8 @@ void Game::GameLoop(sf::RenderWindow& window) {
     player2->Update(elapsed_time, obstacle_array);
 
     // Missile creation (SPACE key) player1
-    player1->Fire(projectile, projectile_array, Projectile::P1);
     // Missile creation (ENTER key) player2
+    player1->Fire(projectile, projectile_array, Projectile::P1);
     player2->Fire(projectile, projectile_array, Projectile::P2);
 
     // Missile drawing
@@ -218,10 +218,17 @@ void Game::TitleScreen(sf::RenderWindow& window) {
     democannon->AutoMove(elapsed_time);
     democannon1->AutoMove(elapsed_time);
     democannon2->AutoMove(elapsed_time);
+    democannon3->AutoMove(elapsed_time);
 
     democannon->AutoFire(projectile_array);
     democannon1->AutoFire(projectile_array);
     democannon2->AutoFire(projectile_array);
+    democannon3->AutoFire(projectile_array);
+
+    window.draw(democannon->sprite);
+    window.draw(democannon1->sprite);
+    window.draw(democannon2->sprite);
+    window.draw(democannon3->sprite);
 
     // Missile drawing
     std::size_t counter = 0;
@@ -231,11 +238,8 @@ void Game::TitleScreen(sf::RenderWindow& window) {
         ++counter;
     }
 
-    window.draw(democannon->sprite);
-    window.draw(democannon1->sprite);
-    window.draw(democannon2->sprite);
-
     window.draw(title);
+    window.draw(press_space);
     window.draw(subtitle);
     window.display();
 }
@@ -360,13 +364,21 @@ void Game::LoadResources() {
     title.setFillColor(sf::Color(100, 50, 150));
     title.setPosition(GAME_WIDTH/4, GAME_HEIGHT/2 - GAME_HEIGHT/4);
 
+    // PRESS SPACE
+    press_space.setFont(digital_font);
+    press_space.setString("PRESS SPACE");
+    press_space.setCharacterSize(40);
+    press_space.setOutlineThickness(1);
+    press_space.setFillColor(sf::Color(80, 50, 120));
+    press_space.setPosition(GAME_WIDTH/2 - press_space.getLocalBounds().width/2 , GAME_HEIGHT - GAME_HEIGHT/5);
+
     // Subtitle
     subtitle.setFont(banksia_font);
     subtitle.setString("Barichello");
-    subtitle.setCharacterSize(30);
+    subtitle.setCharacterSize(20);
     subtitle.setOutlineThickness(1);
     subtitle.setFillColor(sf::Color(100, 50, 150));
-    subtitle.setPosition(GAME_WIDTH/3 + GAME_WIDTH/10, GAME_HEIGHT - GAME_HEIGHT/5);
+    subtitle.setPosition(GAME_WIDTH/2 - subtitle.getLocalBounds().width/2, press_space.getPosition().y + press_space.getLocalBounds().height + 20);
 
     // Level select message
     levelselect.setFont(level_font);
@@ -411,21 +423,35 @@ void Game::LoadDemoCannons() {
     democannon = new Player();
     democannon1 = new Player();
     democannon2 = new Player();
+    democannon3 = new Player();
 
     democannon->sprite.setColor(sf::Color(0, 102, 51));
-    democannon->rect.setPosition(GAME_WIDTH/6, GAME_HEIGHT/2 + GAME_HEIGHT/4);
+    democannon->rect.setPosition(GenerateRandom(GAME_WIDTH), GAME_HEIGHT/2 + GAME_HEIGHT/4);
     democannon->sprite.setScale(1.5f, 1.5f);
     democannon->shot_delay = 4.7f;
+    democannon3->angle = 1;
+    democannon3->rect.setRotation(1);
 
     democannon1->sprite.setColor(sf::Color(0, 90, 3));
-    democannon1->rect.setPosition(GAME_WIDTH/8, GAME_HEIGHT/2 - GAME_HEIGHT/4);
+    democannon1->rect.setPosition(GenerateRandom(GAME_WIDTH), GAME_HEIGHT/2 - GAME_HEIGHT/4);
     democannon1->sprite.setScale(1.5f, 1.5f);
     democannon1->shot_delay = 5.0f;
+    democannon3->angle = 3;
+    democannon3->rect.setRotation(3);
 
     democannon2->sprite.setColor(sf::Color(104, 94, 20));
-    democannon2->rect.setPosition(GAME_WIDTH/2, GAME_HEIGHT/2);
+    democannon2->rect.setPosition(GenerateRandom(GAME_WIDTH), GAME_HEIGHT/2);
     democannon2->sprite.setScale(1.5f, 1.5f);
     democannon2->shot_delay = 2.1f;
+    democannon3->angle = 6;
+    democannon3->rect.setRotation(6);
+
+    democannon3->sprite.setColor(sf::Color(30, 94, 100));
+    democannon3->rect.setPosition(GenerateRandom(GAME_WIDTH), GAME_HEIGHT/7);
+    democannon3->sprite.setScale(1.5f, 1.5f);
+    democannon3->shot_delay = 3.5f;
+    democannon3->angle = 2;
+    democannon3->rect.setRotation(2);
 }
 
 void Game::DeleteDemoCannons() {

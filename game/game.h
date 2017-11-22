@@ -38,6 +38,7 @@ public:
     Player* democannon;
     Player* democannon1;
     Player* democannon2;
+    Player* democannon3;
     
     Obstacle obstacle;
     Projectile projectile;
@@ -63,6 +64,7 @@ public:
     sf::Text message;
     sf::Text title;
     sf::Text subtitle;
+    sf::Text press_space;
     sf::Text levelselect;
     sf::Text level1;
     sf::Text level2;
