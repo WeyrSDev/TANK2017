@@ -2,8 +2,7 @@
 #include "stdafx.h"
 
 Game::Game():
-    window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "TANK2017"),
-    game_state(GameStates::STATE_MENU) {
+    window(sf::VideoMode(GAME_WIDTH, GAME_HEIGHT), "TANK2017") {
     LoadResources();
     LoadDemoCannons();
     ResetLevel();
@@ -27,7 +26,6 @@ void Game::Start() {
             }
 
             if (game_state == GameStates::STATE_MENU) {
-
                 // Esc while in menu closes the game
                 // Press space to select the level
                 if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
@@ -73,32 +71,53 @@ void Game::Start() {
                     background.setTexture(background_texture); // Set grass background
                     game_map = new Map(3, obstacle, obstacle_array);
                     game_state = GameStates::STATE_PLAY;
-
                 }
 
             } else if (game_state == GameStates::STATE_PLAY) {
 
-                // Press esc while playing to go back to the menu
+                // Press ESC or START to pause
                 if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                    game_state = GameStates::STATE_PAUSE;
+                    
+                    // Set pause popup
+                    message.setString("PAUSED");
+                }
+
+            } else if (game_state == GameStates::STATE_PAUSE) {
+
+                // Press ESC or START to unpause
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+                    game_state = GameStates::STATE_PLAY;
+                    
+                    // Reset pause popup
+                    message.setString("");
+                // Press Q or SELECT to quit
+                } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Q) {
                     game_state = GameStates::STATE_MENU;
                     ResetLevel();
                     LoadDemoCannons();
                 }
-
+            
             } else if (game_state == GameStates::STATE_EXIT) {
                 window.close();
             }
         }
 
+        sf::Time elapsed_time = frame_clock.restart(); // Frame time
+
         switch (game_state) {
             case STATE_MENU:
-                TitleScreen(window);
+                TitleScreen(window, elapsed_time);
                 break;
             case STATE_LEVEL_SELECT:
-                LevelSelect(window);
+                LevelSelect(window, elapsed_time);
                 break;
             case STATE_PLAY:
-                GameLoop(window);
+                GameLoop(window, elapsed_time);
+                break;
+            case STATE_PAUSE:
+                elapsed_time = sf::seconds(0.f); // Pause the game
+                GameLoop(window, elapsed_time);
                 break;
             case STATE_EXIT:
                 break;
@@ -106,9 +125,7 @@ void Game::Start() {
     }
 }
 
-void Game::GameLoop(sf::RenderWindow& window) {
-    sf::Time elapsed_time = frame_clock.restart(); // Frame time
-
+void Game::GameLoop(sf::RenderWindow& window, sf::Time elapsed_time) {
     window.clear();
     window.draw(background);
 
@@ -181,8 +198,10 @@ void Game::GameLoop(sf::RenderWindow& window) {
 
     // Missile creation (SPACE key) player1
     // Missile creation (ENTER key) player2
-    player1->Fire(projectile, projectile_array, Projectile::P1);
-    player2->Fire(projectile, projectile_array, Projectile::P2);
+    if (elapsed_time.asSeconds() != 0) {
+        player1->Fire(projectile, projectile_array, Projectile::P1);
+        player2->Fire(projectile, projectile_array, Projectile::P2);
+    }
 
     // Missile drawing
     counter = 0;
@@ -210,11 +229,10 @@ void Game::GameLoop(sf::RenderWindow& window) {
     window.display();
 }
 
-void Game::TitleScreen(sf::RenderWindow& window) {
+void Game::TitleScreen(sf::RenderWindow& window, sf::Time elapsed_time) {
     window.clear();
 
     // Democannons movement
-    sf::Time elapsed_time = frame_clock.restart();
     democannon->AutoMove(elapsed_time);
     democannon1->AutoMove(elapsed_time);
     democannon2->AutoMove(elapsed_time);
@@ -244,11 +262,10 @@ void Game::TitleScreen(sf::RenderWindow& window) {
     window.display();
 }
 
-void Game::LevelSelect(sf::RenderWindow& window) {
+void Game::LevelSelect(sf::RenderWindow& window, sf::Time elapsed_time) {
     window.clear();
 
     // Democannons movement
-    sf::Time elapsed_time = frame_clock.restart();
     democannon->AutoMove(elapsed_time);
     democannon1->AutoMove(elapsed_time);
     democannon2->AutoMove(elapsed_time);
@@ -351,6 +368,8 @@ void Game::LoadResources() {
     message.setFont(digital_font);
     message.setCharacterSize(100);
     message.setStyle(sf::Text::Bold);
+    message.setOutlineThickness(1);
+    message.setOutlineColor(sf::Color::White);
     message.setFillColor(sf::Color(5, 50, 150));
     message.setPosition(GAME_WIDTH/4, GAME_HEIGHT/2);
     // message.setString("DEBUG"); // DEBUG
@@ -374,7 +393,7 @@ void Game::LoadResources() {
 
     // Subtitle
     subtitle.setFont(banksia_font);
-    subtitle.setString("Barichello");
+    subtitle.setString("BARICHELLO");
     subtitle.setCharacterSize(20);
     subtitle.setOutlineThickness(1);
     subtitle.setFillColor(sf::Color(100, 50, 150));

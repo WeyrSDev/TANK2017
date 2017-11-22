@@ -13,9 +13,9 @@ class Game {
 public:
     Game();
     void Start();
-    void GameLoop(sf::RenderWindow& window);
-    void TitleScreen(sf::RenderWindow& window);
-    void LevelSelect(sf::RenderWindow& window);
+    void GameLoop(sf::RenderWindow& window, sf::Time elapsed_time);
+    void TitleScreen(sf::RenderWindow& window, sf::Time elapsed_time);
+    void LevelSelect(sf::RenderWindow& window, sf::Time elapsed_time);
     
     void LoadResources();
     void LoadDemoCannons();

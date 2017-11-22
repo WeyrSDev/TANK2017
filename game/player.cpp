@@ -99,8 +99,6 @@ void Player::AutoFire(std::vector<Projectile>& projectile_array) {
         projectile.angle = angle;
 
         projectile.rect.setRotation(projectile.angle);
-        float x = Entity::LinearVelocityX(projectile.angle);
-        float y = Entity::LinearVelocityY(projectile.angle);
 
         projectile.rect.setPosition(sprite.getPosition());
         projectile_array.push_back(projectile);
@@ -132,8 +130,6 @@ void Player::Fire(Projectile& projectile, std::vector<Projectile>& projectile_ar
         projectile.Owner = owner;
 
         projectile.rect.setRotation(projectile.angle);
-        float x = Entity::LinearVelocityX(projectile.angle);
-        float y = Entity::LinearVelocityY(projectile.angle);
 
         projectile.rect.setPosition(sprite.getPosition());
         projectile_array.push_back(projectile);
