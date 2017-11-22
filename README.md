@@ -11,7 +11,8 @@ To play the game you need to compile it first:
 ### Linux
 1. Install the SFML library using your package manager.
 2. `cd ./game/` and `make`  
-Visit the [SFML Website](https://www.sfml-dev.org/download.php) for more info on downloading and installing it for other plataforms.
+  
+If you don't find SFML for your package manager visit the [SFML Website](https://www.sfml-dev.org/download.php) for more info on downloading and installing it for Windows and other operating systems. (it's really easy).
 
 # Controls
 
