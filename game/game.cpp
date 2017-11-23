@@ -81,6 +81,7 @@ void Game::Start() {
                     
                     // Set pause popup
                     message.setString("PAUSED");
+                    message.setFillColor(sf::Color::Red);
                 }
 
             } else if (game_state == GameStates::STATE_PAUSE) {
@@ -139,6 +140,7 @@ void Game::GameLoop(sf::RenderWindow& window, sf::Time elapsed_time) {
                 projectile_array[counter].alive = false;
                 player1->alive = false; // rip
                 message.setString("P2 won!");
+                message.setFillColor(sf::Color(5, 50, 150));
             }
             projectile_array.erase(iter);
             break;
@@ -149,6 +151,7 @@ void Game::GameLoop(sf::RenderWindow& window, sf::Time elapsed_time) {
                 projectile_array[counter].alive = false;
                 player2->alive = false; // rip
                 message.setString("P1 won!");
+                message.setFillColor(sf::Color(5, 50, 150));
             }
             projectile_array.erase(iter);
             break;
@@ -198,7 +201,7 @@ void Game::GameLoop(sf::RenderWindow& window, sf::Time elapsed_time) {
 
     // Missile creation (SPACE key) player1
     // Missile creation (ENTER key) player2
-    if (elapsed_time.asSeconds() != 0) {
+    if (elapsed_time.asSeconds() != 0) { // Prevent projectiles from being created when the game is paused
         player1->Fire(projectile, projectile_array, Projectile::P1);
         player2->Fire(projectile, projectile_array, Projectile::P2);
     }
@@ -223,6 +226,10 @@ void Game::GameLoop(sf::RenderWindow& window, sf::Time elapsed_time) {
         // window.draw(obstacle_array[counter].rect); // DEBUG
         window.draw(obstacle_array[counter].sprite);
         ++counter;
+    }
+
+    if (game_state == GameStates::STATE_PAUSE) {
+        window.draw(control_rect); // Game controls quick help
     }
 
     window.draw(message); // Popup message
@@ -287,6 +294,7 @@ void Game::LevelSelect(sf::RenderWindow& window, sf::Time elapsed_time) {
     window.draw(democannon2->sprite);
 
     // Map select
+    window.draw(control_rect);
     window.draw(levelselect);
     window.draw(level1);
     window.draw(level2);
@@ -325,10 +333,10 @@ void Game::ResetLevel() {
     player1->fire = sf::Keyboard::Space;
     player1->rect.setPosition(32 * 3, 32 * 3);
 
-    player2->forward = sf::Keyboard::I;
-    player2->backwards = sf::Keyboard::K;
-    player2->left = sf::Keyboard::J;
-    player2->right = sf::Keyboard::L;
+    player2->forward = sf::Keyboard::Up;
+    player2->backwards = sf::Keyboard::Down;
+    player2->left = sf::Keyboard::Left;
+    player2->right = sf::Keyboard::Right;
     player2->fire = sf::Keyboard::Return;
     player2->rect.setPosition(GAME_WIDTH - 32 * 3, GAME_HEIGHT - 32 * 3);
     player2->rect.setRotation(180);
@@ -339,11 +347,18 @@ void Game::ResetLevel() {
 void Game::LoadResources() {
     // Texture loading
     if (!background_texture.loadFromFile(BACKGROUND_PATH)) {
-        std::cout << "Error loading texture!" << "\n";
+        std::cout << "Error loading background texture!" << "\n";
     }
     background_texture.setRepeated(true);
     background.setTexture(background_texture);
     background.setTextureRect(sf::IntRect(0, 0, GAME_WIDTH, GAME_HEIGHT));
+
+    if (!control_texture.loadFromFile(CONTROL_PATH)) {
+        std::cout << "Error loading control texture!" << "\n";
+    }
+    control_rect.setSize(sf::Vector2f(400.f, 400.f));
+    control_rect.setTexture(&control_texture);
+    control_rect.setPosition(GAME_WIDTH - control_rect.getLocalBounds().width, GAME_HEIGHT/2 - control_rect.getLocalBounds().height/2);
 
     if (!snow_texture.loadFromFile(SNOWBACKGROUND_PATH)) {
         std::cout << "Snow background error" << "\n";

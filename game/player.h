@@ -13,6 +13,7 @@ public:
     void AutoFire(std::vector<Projectile>& projectile_array);
     void Hit(std::size_t counter, std::vector<Projectile>& projectile_array);
     void Fire(Projectile& projectile, std::vector<Projectile>& projectile_array, enum Projectile::Owner owner);
+    
     float CheckOutOfMapX(float move_x);
     float CheckOutOfMapY(float move_y);
     // bool CalculateDeflect(std::size_t counter, std::vector<Projectile>& projectile_array);

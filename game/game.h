@@ -56,6 +56,9 @@ public:
     sf::Texture background_texture;
     sf::Texture snow_texture;
     sf::Sprite background;
+    
+    sf::Texture control_texture;
+    sf::RectangleShape control_rect;
 
     sf::Font title_font;
     sf::Font digital_font;

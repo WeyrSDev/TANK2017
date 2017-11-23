@@ -7,6 +7,8 @@ static const int GAME_HEIGHT = 700;
 #define BACKGROUND_PATH       "media/img/grass.png"
 #define SNOWBACKGROUND_PATH   "media/img/snow.jpg"
 #define GRASSBACKGROUND_PATH  "media/img/grass.jpg"
+#define CONTROL_PATH          "media/img/controls.png"
+
 #define TITLEFONT_PATH        "media/fonts/game_font.ttf"
 #define DIGITALFONT_PATH      "media/fonts/digitalfont.ttf"
 #define LEVELFONT_PATH        "media/fonts/level_font.otf"
